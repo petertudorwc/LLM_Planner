@@ -1,0 +1,184 @@
+version: '3.8'
+
+services:
+  # API Gateway - Central orchestrator
+  api-gateway:
+    build: ./api-gateway
+    container_name: llm_planner_api_gateway
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=${ENVIRONMENT:-development}
+      - JWT_SECRET=${JWT_SECRET:-your-secret-key-change-in-production}
+      - LLM_SERVICE_URL=http://llm-service:8001
+      - VECTOR_STORE_URL=http://vector-store:6333
+      - EMBEDDING_SERVICE_URL=http://embedding-service:8002
+      - MAPPING_SERVICE_URL=http://mapping-service:8003
+      - SPEECH_SERVICE_URL=http://speech-service:8004
+      - INGESTION_SERVICE_URL=http://ingestion-service:8005
+      - GEOCODING_SERVICE_URL=http://geocoding-service:8006
+    depends_on:
+      - vector-store
+      - embedding-service
+      - llm-service
+      - mapping-service
+    volumes:
+      - ./data/uploads:/app/uploads
+    networks:
+      - llm_planner_network
+
+  # LLM Service - Ollama with Llama 3.1
+  llm-service:
+    build: ./llm-service
+    container_name: llm_planner_llm
+    ports:
+      - "8001:8001"
+      - "11434:11434"  # Ollama API port
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+      - OLLAMA_KEEP_ALIVE=-1
+      - MODEL_NAME=${LLM_MODEL_NAME:-qwen3:8b}
+    volumes:
+      - C:\Users\Peter\.ollama:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    networks:
+      - llm_planner_network
+
+  # Embedding Service - sentence-transformers
+  embedding-service:
+    build: ./embedding-service
+    container_name: llm_planner_embedding
+    ports:
+      - "8002:8002"
+    environment:
+      - MODEL_NAME=sentence-transformers/all-mpnet-base-v2
+      - CACHE_DIR=/models
+    volumes:
+      - ./models/embeddings:/models
+    networks:
+      - llm_planner_network
+
+  # Vector Store - Qdrant
+  vector-store:
+    image: qdrant/qdrant:latest
+    container_name: llm_planner_qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - ./data/qdrant:/qdrant/storage
+    networks:
+      - llm_planner_network
+
+  # Mapping Service - PostGIS + API
+  mapping-service:
+    build: ./mapping-service
+    container_name: llm_planner_mapping
+    ports:
+      - "8003:8003"
+    environment:
+      - POSTGRES_HOST=postgis
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=${POSTGRES_DB:-mapping_db}
+      - POSTGRES_USER=${POSTGRES_USER:-mapuser}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-mappass}
+    depends_on:
+      - postgis
+    volumes:
+      - ./map-tiles:/app/map-tiles
+    networks:
+      - llm_planner_network
+
+  # PostGIS Database
+  postgis:
+    image: postgis/postgis:15-3.3
+    container_name: llm_planner_postgis
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-mapping_db}
+      - POSTGRES_USER=${POSTGRES_USER:-mapuser}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-mappass}
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    networks:
+      - llm_planner_network
+
+  # Speech Recognition Service - Whisper
+  speech-service:
+    build: ./speech-service
+    container_name: llm_planner_speech
+    ports:
+      - "8004:8004"
+    environment:
+      - MODEL_SIZE=${WHISPER_MODEL_SIZE:-base}
+      - CACHE_DIR=/models
+    volumes:
+      - ./models/whisper:/models
+    networks:
+      - llm_planner_network
+
+  # Data Ingestion Service
+  ingestion-service:
+    build: ./ingestion-service
+    container_name: llm_planner_ingestion
+    ports:
+      - "8005:8005"
+    environment:
+      - EMBEDDING_SERVICE_URL=http://embedding-service:8002
+      - VECTOR_STORE_URL=http://vector-store:6333
+      - MAPPING_SERVICE_URL=http://mapping-service:8003
+    depends_on:
+      - embedding-service
+      - vector-store
+      - mapping-service
+    volumes:
+      - ./data/uploads:/app/uploads
+      - ./data/processed:/app/processed
+    networks:
+      - llm_planner_network
+
+  # Geocoding Service - GeoNames lookup
+  geocoding-service:
+    build: ./geocoding-service
+    container_name: llm_planner_geocoding
+    ports:
+      - "8006:8006"
+    environment:
+      - POSTGRES_HOST=postgis
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=${POSTGRES_DB:-mapping_db}
+      - POSTGRES_USER=${POSTGRES_USER:-mapuser}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-mappass123}
+    depends_on:
+      - postgis
+    volumes:
+      - ./data/geonames:/app/data/geonames
+    networks:
+      - llm_planner_network
+
+  # Frontend - React Application
+  frontend:
+    build: ./frontend
+    container_name: llm_planner_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+      - REACT_APP_WS_URL=ws://localhost:8000
+    depends_on:
+      - api-gateway
+    networks:
+      - llm_planner_network
+
+networks:
+  llm_planner_network:
+    driver: bridge
+
+volumes:
+  qdrant_data:
+  postgres_data:
