@@ -117,7 +117,7 @@ function UploadPanel() {
         {result && (
           <Alert severity="success" sx={{ mt: 2 }}>
             Successfully processed {result.processed_files} files with {result.chunks_created} chunks.
-            {result.errors.length > 0 && (
+            {result.errors && result.errors.length > 0 && (
               <Box sx={{ mt: 1 }}>
                 <Typography variant="body2">Errors:</Typography>
                 <ul>

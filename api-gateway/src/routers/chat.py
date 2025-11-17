@@ -31,30 +31,50 @@ async def send_message(
 ):
     """Send message to LLM and get response"""
     try:
-        # Step 1: Search vector store for relevant context
+        # Step 1: Get embedding for the user's query
         async with httpx.AsyncClient() as client:
-            # Query vector store
-            vector_response = await client.post(
-                f"{settings.VECTOR_STORE_URL}/collections/documents/points/search",
-                json={
-                    "query": request.message,
-                    "limit": 5
-                },
+            embed_response = await client.post(
+                f"{settings.EMBEDDING_SERVICE_URL}/embed",
+                json={"texts": [request.message]},
                 timeout=30.0
             )
             
-            context_documents = []
-            if vector_response.status_code == 200:
-                context_documents = vector_response.json().get("result", [])
+            if embed_response.status_code != 200:
+                logger.warning("Failed to get embedding for query")
+                query_vector = None
+            else:
+                query_vector = embed_response.json()["embeddings"][0]
         
-        # Step 2: Build prompt with context
+        # Step 2: Search vector store for relevant context using the embedding
+        context_documents = []
+        if query_vector:
+            async with httpx.AsyncClient() as client:
+                vector_response = await client.post(
+                    f"{settings.VECTOR_STORE_URL}/collections/documents/points/search",
+                    json={
+                        "vector": query_vector,
+                        "limit": 5,
+                        "with_payload": True
+                    },
+                    timeout=30.0
+                )
+                
+                if vector_response.status_code == 200:
+                    context_documents = vector_response.json().get("result", [])
+        
+        # Step 3: Build prompt with context
         context_text = ""
         if context_documents:
-            context_text = "\n\nRelevant context:\n"
-            for doc in context_documents:
-                context_text += f"- {doc.get('payload', {}).get('text', '')}\n"
+            context_text = "\n\n=== KNOWLEDGE BASE CONTEXT ===\n"
+            context_text += "The following information was found in the knowledge base:\n\n"
+            for i, doc in enumerate(context_documents, 1):
+                payload = doc.get('payload', {})
+                text = payload.get('text', '')
+                score = doc.get('score', 0)
+                context_text += f"{i}. {text} (relevance: {score:.2f})\n\n"
+            context_text += "=== END CONTEXT ===\n"
         
-        # Step 3: Send to LLM
+        # Step 4: Send to LLM with context appended to message
         async with httpx.AsyncClient() as client:
             llm_response = await client.post(
                 f"{settings.LLM_SERVICE_URL}/chat",

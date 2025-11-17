@@ -71,12 +71,17 @@ async def process_files(request: ProcessRequest):
             # Extract text based on file type
             if extension == ".pdf":
                 text_chunks = pdf_processor.process(file_path)
+                # PDF returns simple strings
+                chunks_with_metadata = [{'text': chunk, 'metadata': {'filename': file_info.filename, 'chunk_index': i}} for i, chunk in enumerate(text_chunks)]
             elif extension in [".docx", ".doc"]:
                 text_chunks = docx_processor.process(file_path)
+                chunks_with_metadata = [{'text': chunk, 'metadata': {'filename': file_info.filename, 'chunk_index': i}} for i, chunk in enumerate(text_chunks)]
             elif extension in [".xlsx", ".xls"]:
                 text_chunks = excel_processor.process(file_path)
+                chunks_with_metadata = [{'text': chunk, 'metadata': {'filename': file_info.filename, 'chunk_index': i}} for i, chunk in enumerate(text_chunks)]
             elif extension == ".csv":
-                text_chunks = csv_processor.process(file_path)
+                # CSV returns chunks with metadata
+                chunks_with_metadata = csv_processor.process(file_path)
             elif extension in [".geojson", ".shp", ".kml"]:
                 # Handle geospatial files differently
                 result = await geospatial_processor.process(file_path, MAPPING_SERVICE_URL)
@@ -86,11 +91,14 @@ async def process_files(request: ProcessRequest):
                 errors.append(f"Unsupported file type: {extension}")
                 continue
             
+            # Extract just text for embedding
+            text_only = [chunk['text'] for chunk in chunks_with_metadata]
+            
             # Generate embeddings
             async with httpx.AsyncClient() as client:
                 embed_response = await client.post(
                     f"{EMBEDDING_SERVICE_URL}/embed",
-                    json={"texts": text_chunks},
+                    json={"texts": text_only},
                     timeout=60.0
                 )
                 
@@ -100,17 +108,23 @@ async def process_files(request: ProcessRequest):
                 
                 embeddings = embed_response.json()["embeddings"]
             
-            # Store in vector database
+            # Store in vector database with metadata
             points = []
-            for i, (chunk, embedding) in enumerate(zip(text_chunks, embeddings)):
+            for i, (chunk_data, embedding) in enumerate(zip(chunks_with_metadata, embeddings)):
+                # Use UUID for point ID (Qdrant requires UUID or positive integer)
+                import uuid
+                point_id = str(uuid.uuid4())
+                
+                # Store original entity_id in payload for reference
+                payload = {
+                    "text": chunk_data['text'],
+                    **chunk_data['metadata']
+                }
+                
                 points.append({
-                    "id": f"{file_info.filename}_{i}",
+                    "id": point_id,
                     "vector": embedding,
-                    "payload": {
-                        "text": chunk,
-                        "filename": file_info.filename,
-                        "chunk_index": i
-                    }
+                    "payload": payload
                 })
             
             async with httpx.AsyncClient() as client:
@@ -137,12 +151,16 @@ async def process_files(request: ProcessRequest):
                 )
                 
                 if insert_response.status_code not in [200, 201]:
-                    errors.append(f"Error storing vectors for {file_info.filename}")
+                    error_msg = f"Failed to store vectors for {file_info.filename}: {insert_response.status_code} - {insert_response.text}"
+                    logger.error(error_msg)
+                    errors.append(error_msg)
                     continue
+                
+                logger.info(f"Successfully stored {len(points)} points for {file_info.filename}")
             
             processed_count += 1
-            total_chunks += len(text_chunks)
-            logger.info(f"Successfully processed {file_info.filename}: {len(text_chunks)} chunks")
+            total_chunks += len(chunks_with_metadata)
+            logger.info(f"Successfully processed {file_info.filename}: {len(chunks_with_metadata)} chunks")
             
         except Exception as e:
             logger.error(f"Error processing {file_info.filename}: {e}")

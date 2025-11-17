@@ -12,6 +12,7 @@ import {
 import { Send as SendIcon, Mic as MicIcon } from '@mui/icons-material';
 import { chatAPI, speechAPI } from '../services/api';
 import { useMap } from '../contexts/MapContext';
+import FormattedMessage from './FormattedMessage';
 
 function ChatPanel() {
   const [messages, setMessages] = useState([]);
@@ -110,6 +111,7 @@ function ChatPanel() {
               key={index}
               sx={{
                 justifyContent: message.role === 'user' ? 'flex-end' : 'flex-start',
+                alignItems: 'flex-start',
               }}
             >
               <Paper
@@ -119,7 +121,11 @@ function ChatPanel() {
                   bgcolor: message.role === 'user' ? 'primary.main' : 'grey.800',
                 }}
               >
-                <Typography variant="body1">{message.content}</Typography>
+                {message.role === 'user' ? (
+                  <Typography variant="body1">{message.content}</Typography>
+                ) : (
+                  <FormattedMessage content={message.content} />
+                )}
               </Paper>
             </ListItem>
           ))}

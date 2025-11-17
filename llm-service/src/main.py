@@ -145,6 +145,15 @@ async def chat(request: ChatRequest):
         # Build prompt with function definitions if enabled
         system_prompt = """You are an AI assistant helping with disaster relief planning and data visualization.
 
+You have access to a local knowledge base containing information about:
+- Local businesses and suppliers
+- Emergency personnel and contacts
+- Available resources (vehicles, equipment, supplies)
+- Facilities and locations
+
+IMPORTANT: The system automatically searches the knowledge base for relevant information when you receive a query.
+Any relevant context found will be appended to the user's message.
+
 You have access to a comprehensive UK places database via the geocode_place function.
 For any UK town, city, or village, use geocode_place to look up coordinates.
 
@@ -177,17 +186,24 @@ Available functions:
    Parameters: {"place_name": "Abingdon", "limit": 1}
    Returns: Automatically plots the place on the map
 
-2. search_knowledge - Search the knowledge base
-   Parameters: {"query": "search text", "limit": 5}
-
-3. map_plot_points - Plot points on the map (use when you already have coordinates)
+2. map_plot_points - Plot points on the map (use when you already have coordinates)
    Parameters: {"points": [{"lat": 51.5074, "lon": -0.1278, "label": "Label"}], "layer_name": "Optional descriptive name"}
    Note: The system automatically generates unique IDs for each layer, so you can plot multiple point sets without conflict.
 
-4. map_draw_polygon - Draw polygon on map
+3. map_draw_polygon - Draw polygon on map
    Parameters: {"coordinates": [[lon, lat], [lon, lat], ...], "style": {"color": "red", "fillOpacity": 0.3}}
    CRITICAL: The polygon MUST be closed - the last coordinate MUST be identical to the first coordinate!
    Example: [[-1.32, 51.67], [-1.31, 51.69], [-1.26, 51.67], [-1.32, 51.67]] ← Notice first and last are the same!
+   Note: Each polygon gets a unique ID automatically. You can draw multiple polygons without them replacing each other.
+
+4. map_delete_layer - Delete a layer from the map
+   Parameters: {"layer_id": "polygon_20231111_143022_123"}
+   Note: Use the exact layer ID from the Layers tab. Each shape has a unique timestamped ID.
+
+When answering questions about resources, personnel, facilities, or businesses:
+- Check if context was provided with the user's message
+- If context is found, use it to answer the question
+- If no context is found, inform the user that the knowledge base may be empty or doesn't contain that information yet
    Note: Each polygon gets a unique ID automatically. You can draw multiple polygons without them replacing each other.
 
 5. map_delete_layer - Delete a layer from the map

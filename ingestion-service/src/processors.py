@@ -1,7 +1,7 @@
 # Document Processors
 
 from pathlib import Path
-from typing import List
+from typing import List, Dict, Any
 import logging
 
 logger = logging.getLogger(__name__)
@@ -58,19 +58,177 @@ class ExcelProcessor:
 class CSVProcessor:
     """Process CSV files"""
     
-    def process(self, file_path: Path) -> List[str]:
-        """Extract data from CSV and convert to text chunks"""
+    def process(self, file_path: Path) -> List[Dict[str, Any]]:
+        """Extract data from CSV and convert to text chunks with metadata"""
         import pandas as pd
         
         df = pd.read_csv(file_path)
         chunks = []
         
-        # Convert each row to text
+        # Detect entity type from filename
+        filename_lower = file_path.stem.lower()
+        if 'business' in filename_lower:
+            entity_type = 'business'
+        elif 'personnel' in filename_lower or 'person' in filename_lower:
+            entity_type = 'personnel'
+        elif 'resource' in filename_lower:
+            entity_type = 'resource'
+        elif 'facilit' in filename_lower:
+            entity_type = 'facility'
+        else:
+            entity_type = 'general'
+        
+        # Convert each row to structured text with metadata
         for idx, row in df.iterrows():
-            row_text = " | ".join([f"{col}: {val}" for col, val in row.items()])
-            chunks.append(row_text)
+            # Create readable text description
+            row_text = self._format_row(row, entity_type)
+            
+            # Extract metadata
+            metadata = {
+                'filename': file_path.name,
+                'row_index': int(idx),
+                'entity_type': entity_type
+            }
+            
+            # Add entity-specific metadata
+            if 'id' in row:
+                metadata['entity_id'] = str(row['id'])
+            if 'name' in row:
+                metadata['entity_name'] = str(row['name'])
+            if 'type' in row:
+                metadata['sub_type'] = str(row['type'])
+            if 'latitude' in row and 'longitude' in row:
+                try:
+                    metadata['latitude'] = float(row['latitude'])
+                    metadata['longitude'] = float(row['longitude'])
+                except:
+                    pass
+            
+            chunks.append({
+                'text': row_text,
+                'metadata': metadata
+            })
         
         return chunks
+    
+    def _format_row(self, row, entity_type: str) -> str:
+        """Format row data into readable text based on entity type"""
+        if entity_type == 'business':
+            return self._format_business(row)
+        elif entity_type == 'personnel':
+            return self._format_personnel(row)
+        elif entity_type == 'resource':
+            return self._format_resource(row)
+        elif entity_type == 'facility':
+            return self._format_facility(row)
+        else:
+            return " | ".join([f"{col}: {val}" for col, val in row.items() if pd.notna(val)])
+    
+    def _format_business(self, row) -> str:
+        """Format business entity"""
+        import pandas as pd
+        parts = []
+        
+        if 'name' in row:
+            parts.append(f"Business: {row['name']}")
+        if 'type' in row:
+            parts.append(f"Type: {row['type']}")
+        if 'address' in row:
+            parts.append(f"Location: {row['address']}")
+        if 'owner_name' in row:
+            parts.append(f"Owner: {row['owner_name']}")
+        if 'owner_phone' in row and pd.notna(row['owner_phone']):
+            parts.append(f"Contact: {row['owner_phone']}")
+        if 'products_services' in row and pd.notna(row['products_services']):
+            products = str(row['products_services']).replace('|', ', ')
+            parts.append(f"Products/Services: {products}")
+        if 'emergency_resources' in row and pd.notna(row['emergency_resources']):
+            resources = str(row['emergency_resources']).replace('|', ', ')
+            parts.append(f"Emergency Resources Available: {resources}")
+        if 'notes' in row and pd.notna(row['notes']):
+            parts.append(f"Notes: {row['notes']}")
+        
+        return ". ".join(parts) + "."
+    
+    def _format_personnel(self, row) -> str:
+        """Format personnel entity"""
+        import pandas as pd
+        parts = []
+        
+        if 'name' in row:
+            parts.append(f"Person: {row['name']}")
+        if 'role' in row:
+            parts.append(f"Role: {row['role']}")
+        if 'organization' in row:
+            parts.append(f"Organization: {row['organization']}")
+        if 'expertise' in row and pd.notna(row['expertise']):
+            expertise = str(row['expertise']).replace('|', ', ')
+            parts.append(f"Expertise: {expertise}")
+        if 'phone_primary' in row and pd.notna(row['phone_primary']):
+            parts.append(f"Phone: {row['phone_primary']}")
+        if 'radio_callsign' in row and pd.notna(row['radio_callsign']):
+            parts.append(f"Radio: {row['radio_callsign']}")
+        if 'emergency_role' in row and pd.notna(row['emergency_role']):
+            parts.append(f"Emergency Role: {row['emergency_role']}")
+        if 'response_time' in row and pd.notna(row['response_time']):
+            parts.append(f"Response Time: {row['response_time']}")
+        if 'notes' in row and pd.notna(row['notes']):
+            parts.append(f"Notes: {row['notes']}")
+        
+        return ". ".join(parts) + "."
+    
+    def _format_resource(self, row) -> str:
+        """Format resource entity"""
+        import pandas as pd
+        parts = []
+        
+        if 'name' in row:
+            parts.append(f"Resource: {row['name']}")
+        if 'type' in row:
+            parts.append(f"Type: {row['type']}")
+        if 'available' in row and 'unit' in row:
+            parts.append(f"Available: {row['available']} {row['unit']}")
+        if 'facility' in row and pd.notna(row['facility']):
+            parts.append(f"Location: {row['facility']}")
+        if 'status' in row:
+            parts.append(f"Status: {row['status']}")
+        if 'owner_organization' in row and pd.notna(row['owner_organization']):
+            parts.append(f"Owner: {row['owner_organization']}")
+        if 'contact_person' in row and pd.notna(row['contact_person']):
+            parts.append(f"Contact: {row['contact_person']}")
+        if 'notes' in row and pd.notna(row['notes']):
+            parts.append(f"Notes: {row['notes']}")
+        
+        return ". ".join(parts) + "."
+    
+    def _format_facility(self, row) -> str:
+        """Format facility entity"""
+        import pandas as pd
+        parts = []
+        
+        if 'name' in row:
+            parts.append(f"Facility: {row['name']}")
+        if 'type' in row:
+            parts.append(f"Type: {row['type']}")
+        if 'address' in row:
+            parts.append(f"Location: {row['address']}")
+        if 'capacity_people' in row and pd.notna(row['capacity_people']):
+            parts.append(f"Capacity: {row['capacity_people']} people")
+        if 'vehicle_access' in row and row['vehicle_access']:
+            parts.append("Vehicle access available")
+        if 'helicopter_landing' in row and row['helicopter_landing']:
+            parts.append("Helicopter landing available")
+        if 'electricity' in row and row['electricity']:
+            parts.append("Has electricity")
+        if 'generator_backup' in row and row['generator_backup']:
+            parts.append("Has backup generator")
+        if 'suitable_for' in row and pd.notna(row['suitable_for']):
+            suitable = str(row['suitable_for']).replace('|', ', ')
+            parts.append(f"Suitable for: {suitable}")
+        if 'notes' in row and pd.notna(row['notes']):
+            parts.append(f"Notes: {row['notes']}")
+        
+        return ". ".join(parts) + "."
 
 class GeospatialProcessor:
     """Process geospatial files"""
