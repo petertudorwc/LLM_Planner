@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import Response
 from pydantic import BaseModel
 from typing import List, Optional
 import httpx
@@ -119,8 +120,8 @@ async def delete_layer(
         logger.error(f"Error deleting map layer: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.get("/tiles/{z}/{x}/{y}.png")
-async def get_tile(z: int, x: int, y: int, layer: str = "osm"):
+@router.get("/tiles/{layer}/{z}/{x}/{y}.png")
+async def get_tile(layer: str, z: int, x: int, y: int):
     """Get map tile (proxy to tile service)"""
     try:
         async with httpx.AsyncClient() as client:
@@ -132,7 +133,72 @@ async def get_tile(z: int, x: int, y: int, layer: str = "osm"):
             if response.status_code != 200:
                 raise HTTPException(status_code=404, detail="Tile not found")
             
-            return response.content
+            # Return as PNG image with proper content type
+            return Response(content=response.content, media_type="image/png")
+    except HTTPException:
+        raise
     except Exception as e:
-        logger.error(f"Error fetching tile: {e}")
+        logger.error(f"Error fetching tile {layer}/{z}/{x}/{y}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/tiles/status")
+async def get_tile_status(current_user: dict = Depends(get_current_user)):
+    """Get tile cache status"""
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                f"{settings.MAPPING_SERVICE_URL}/tiles/status",
+                timeout=30.0
+            )
+            
+            if response.status_code != 200:
+                raise HTTPException(status_code=500, detail="Mapping service error")
+            
+            return response.json()
+    except Exception as e:
+        logger.error(f"Error fetching tile status: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/tiles/download")
+async def download_tiles(
+    request: dict,
+    current_user: dict = Depends(get_current_user)
+):
+    """Start tile download in background"""
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                f"{settings.MAPPING_SERVICE_URL}/tiles/download",
+                json=request,
+                timeout=30.0
+            )
+            
+            if response.status_code != 200:
+                raise HTTPException(status_code=500, detail="Mapping service error")
+            
+            logger.info(f"User {current_user['username']} started tile download: {request.get('area_name')}")
+            return response.json()
+    except Exception as e:
+        logger.error(f"Error starting tile download: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/draw_shape")
+async def draw_shape(request: dict):
+    """Draw a shape on the map (circle, rectangle, ellipse)"""
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                f"{settings.MAPPING_SERVICE_URL}/draw_shape",
+                json=request,
+                timeout=30.0
+            )
+            
+            if response.status_code != 200:
+                raise HTTPException(status_code=response.status_code, detail=response.text)
+            
+            return response.json()
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error drawing shape: {e}")
         raise HTTPException(status_code=500, detail=str(e))

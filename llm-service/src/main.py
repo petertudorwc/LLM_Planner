@@ -59,9 +59,37 @@ AVAILABLE_FUNCTIONS = {
             "required": ["points"]
         }
     },
+    "map_draw_shape": {
+        "name": "map_draw_shape",
+        "description": "Draw a geometric shape on the map (circle, rectangle, or ellipse). The backend calculates all coordinates automatically.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "shape_type": {
+                    "type": "string",
+                    "enum": ["circle", "rectangle", "ellipse"],
+                    "description": "Type of shape to draw"
+                },
+                "center_lat": {"type": "number", "description": "Center latitude"},
+                "center_lon": {"type": "number", "description": "Center longitude"},
+                "radius_miles": {"type": "number", "description": "Radius in miles (for circles only)"},
+                "width_miles": {"type": "number", "description": "Width in miles (for rectangles and ellipses)"},
+                "height_miles": {"type": "number", "description": "Height in miles (for rectangles and ellipses)"},
+                "style": {
+                    "type": "object",
+                    "properties": {
+                        "color": {"type": "string"},
+                        "fillOpacity": {"type": "number"}
+                    }
+                },
+                "label": {"type": "string", "description": "Optional label for the shape"}
+            },
+            "required": ["shape_type", "center_lat", "center_lon"]
+        }
+    },
     "map_draw_polygon": {
         "name": "map_draw_polygon",
-        "description": "Draw a polygon or region on the map",
+        "description": "Draw a custom polygon on the map with manually specified coordinates",
         "parameters": {
             "type": "object",
             "properties": {
@@ -164,16 +192,20 @@ Pre-loaded major cities (use these directly without geocoding):
 - Oxford: 51.7520°N, -1.2577°W
 - Abingdon: 51.6708°N, -1.2837°W
 
-For circular boundaries around a point:
-- 1 mile ≈ 0.0145° latitude, 0.0182° longitude (at UK latitudes)
-- 2 miles ≈ 0.029° latitude, 0.0364° longitude
-- 5 miles ≈ 0.0725° latitude, 0.091° longitude
-- Calculate 12-16 points in a circle using these approximations
-
 CRITICAL INSTRUCTION: When the user asks you to "draw", "plot", "show", "create a boundary", or any similar action:
-1. Calculate the coordinates if needed
-2. ALWAYS call the appropriate function (map_plot_points or map_draw_polygon)
-3. Do NOT just explain what you would do - ACTUALLY DO IT with a FUNCTION_CALL
+1. Use map_draw_shape for circles, rectangles, and ellipses (the backend calculates coordinates automatically)
+2. IMMEDIATELY call the function with FUNCTION_CALL: - DO NOT explain what you're doing
+3. After the function executes, you can provide a brief confirmation
+
+DO NOT:
+- Show coordinate tables
+- Explain the math or formulas
+- Write out the coordinates in text
+- Say "I will now..." or "Here are the coordinates..."
+- Calculate circle/rectangle/ellipse coordinates yourself (use map_draw_shape instead!)
+
+INSTEAD, IMMEDIATELY output:
+FUNCTION_CALL: {"name": "map_draw_shape", "parameters": {...}}
 
 When you need to execute an action, respond with a JSON function call in this exact format:
 FUNCTION_CALL: {"name": "function_name", "parameters": {...}}
@@ -190,13 +222,20 @@ Available functions:
    Parameters: {"points": [{"lat": 51.5074, "lon": -0.1278, "label": "Label"}], "layer_name": "Optional descriptive name"}
    Note: The system automatically generates unique IDs for each layer, so you can plot multiple point sets without conflict.
 
-3. map_draw_polygon - Draw polygon on map
+3. map_draw_shape - Draw geometric shapes (PREFERRED for circles, rectangles, ellipses)
+   Parameters:
+   - For circle: {"shape_type": "circle", "center_lat": 51.6708, "center_lon": -1.2837, "radius_miles": 1, "style": {"color": "blue", "fillOpacity": 0.3}, "label": "1 mile radius"}
+   - For rectangle: {"shape_type": "rectangle", "center_lat": 51.6708, "center_lon": -1.2837, "width_miles": 2, "height_miles": 1, "style": {"color": "red", "fillOpacity": 0.2}}
+   - For ellipse: {"shape_type": "ellipse", "center_lat": 51.6708, "center_lon": -1.2837, "width_miles": 3, "height_miles": 2, "style": {"color": "green", "fillOpacity": 0.2}}
+   Note: The backend calculates all coordinates automatically. You just provide the center point and size!
+
+4. map_draw_polygon - Draw custom polygon with manual coordinates (ONLY use for irregular shapes)
    Parameters: {"coordinates": [[lon, lat], [lon, lat], ...], "style": {"color": "red", "fillOpacity": 0.3}}
    CRITICAL: The polygon MUST be closed - the last coordinate MUST be identical to the first coordinate!
    Example: [[-1.32, 51.67], [-1.31, 51.69], [-1.26, 51.67], [-1.32, 51.67]] ← Notice first and last are the same!
-   Note: Each polygon gets a unique ID automatically. You can draw multiple polygons without them replacing each other.
+   Note: Only use this for custom irregular shapes. For circles/rectangles/ellipses, use map_draw_shape instead!
 
-4. map_delete_layer - Delete a layer from the map
+5. map_delete_layer - Delete a layer from the map
    Parameters: {"layer_id": "polygon_20231111_143022_123"}
    Note: Use the exact layer ID from the Layers tab. Each shape has a unique timestamped ID.
 
@@ -204,18 +243,15 @@ When answering questions about resources, personnel, facilities, or businesses:
 - Check if context was provided with the user's message
 - If context is found, use it to answer the question
 - If no context is found, inform the user that the knowledge base may be empty or doesn't contain that information yet
-   Note: Each polygon gets a unique ID automatically. You can draw multiple polygons without them replacing each other.
-
-5. map_delete_layer - Delete a layer from the map
-   Parameters: {"layer_id": "polygon_20231111_143022_123"}
-   Note: Use the exact layer ID from the Layers tab. Each shape has a unique timestamped ID.
 
 Examples:
 - Plot unknown places: FUNCTION_CALL: {"name": "geocode_place", "parameters": {"place_name": "Small Town", "limit": 1}}
 - Plot multiple known places:
   FUNCTION_CALL: {"name": "map_plot_points", "parameters": {"points": [{"lat": 51.6708, "lon": -1.2837, "label": "Abingdon"}, {"lat": 51.7520, "lon": -1.2577, "label": "Oxford"}]}}
-- Draw 2-mile circle around Abingdon (51.6708, -1.2837):
-  FUNCTION_CALL: {"name": "map_draw_polygon", "parameters": {"coordinates": [[-1.3201, 51.6998], [-1.3019, 51.7054], [-1.2811, 51.7054], [-1.2629, 51.6998], [-1.2511, 51.6854], [-1.2473, 51.6708], [-1.2511, 51.6562], [-1.2629, 51.6418], [-1.2811, 51.6362], [-1.3019, 51.6362], [-1.3201, 51.6418], [-1.3319, 51.6562], [-1.3357, 51.6708], [-1.3319, 51.6854], [-1.3201, 51.6998]], "style": {"color": "blue", "fillOpacity": 0.2}}}
+- Draw 1-mile circle around Abingdon:
+  FUNCTION_CALL: {"name": "map_draw_shape", "parameters": {"shape_type": "circle", "center_lat": 51.6708, "center_lon": -1.2837, "radius_miles": 1, "style": {"color": "blue", "fillOpacity": 0.2}, "label": "1 mile radius"}}
+- Draw 2x1 mile rectangle around Oxford:
+  FUNCTION_CALL: {"name": "map_draw_shape", "parameters": {"shape_type": "rectangle", "center_lat": 51.7520, "center_lon": -1.2577, "width_miles": 2, "height_miles": 1, "style": {"color": "red", "fillOpacity": 0.2}}}
 
 Always include FUNCTION_CALL: when you want to execute an action."""
         

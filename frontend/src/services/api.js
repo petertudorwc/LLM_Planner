@@ -43,6 +43,8 @@ export const mappingAPI = {
   getLayers: () => api.get('/api/mapping/layers'),
   createLayer: (layer) => api.post('/api/mapping/layers', layer),
   deleteLayer: (layerId) => api.delete(`/api/mapping/layers/${layerId}`),
+  getTileStatus: () => api.get('/api/mapping/tiles/status'),
+  downloadTiles: (config) => api.post('/api/mapping/tiles/download', config),
 };
 
 // Ingestion API
