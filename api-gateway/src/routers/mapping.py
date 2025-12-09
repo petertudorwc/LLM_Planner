@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from fastapi.responses import Response
+from fastapi.responses import Response, StreamingResponse
 from pydantic import BaseModel
 from typing import List, Optional
 import httpx
@@ -180,6 +180,65 @@ async def download_tiles(
             return response.json()
     except Exception as e:
         logger.error(f"Error starting tile download: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/tiles/download")
+async def download_tiles_stream(
+    lat: float,
+    lon: float,
+    radius_miles: float = 5.0,
+    min_zoom: int = 13,
+    max_zoom: int = 19,
+    layers: str = "osm,satellite",
+    current_user: dict = Depends(get_current_user)
+):
+    """Stream tile download progress (Server-Sent Events)"""
+    try:
+        # Build URL with query parameters
+        url = f"{settings.MAPPING_SERVICE_URL}/tiles/download"
+        params = {
+            "lat": lat,
+            "lon": lon,
+            "radius_miles": radius_miles,
+            "min_zoom": min_zoom,
+            "max_zoom": max_zoom,
+            "layers": layers
+        }
+        
+        logger.info(f"User {current_user['username']} streaming tile download: lat={lat}, lon={lon}, radius={radius_miles}mi, url={url}")
+        
+        # Stream the response from mapping service
+        async def stream_from_mapping_service():
+            try:
+                # Use a very long timeout for streaming
+                timeout = httpx.Timeout(connect=10.0, read=None, write=None, pool=None)
+                async with httpx.AsyncClient(timeout=timeout) as client:
+                    async with client.stream("GET", url, params=params) as response:
+                        logger.info(f"Mapping service response status: {response.status_code}")
+                        
+                        if response.status_code != 200:
+                            error_text = await response.aread()
+                            logger.error(f"Mapping service error: {response.status_code} - {error_text}")
+                            yield f"data: {{'type': 'error', 'message': 'Mapping service error: {response.status_code}'}}\n\n".encode()
+                            return
+                        
+                        async for chunk in response.aiter_bytes():
+                            yield chunk
+            except Exception as e:
+                logger.error(f"Stream error: {e}")
+                yield f"data: {{'type': 'error', 'message': 'Stream error: {str(e)}'}}\n\n".encode()
+        
+        return StreamingResponse(
+            stream_from_mapping_service(),
+            media_type="text/event-stream",
+            headers={
+                "Cache-Control": "no-cache",
+                "Connection": "keep-alive",
+                "X-Accel-Buffering": "no"
+            }
+        )
+    except Exception as e:
+        logger.error(f"Error streaming tile download: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/draw_shape")

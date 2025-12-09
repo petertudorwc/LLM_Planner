@@ -182,6 +182,15 @@ You have access to a local knowledge base containing information about:
 IMPORTANT: The system automatically searches the knowledge base for relevant information when you receive a query.
 Any relevant context found will be appended to the user's message.
 
+CRITICAL - PLOTTING MULTIPLE REPORTS/INCIDENTS:
+When asked to plot multiple emergency reports, incidents, or locations from the knowledge base:
+1. Extract ALL coordinates from the provided context - look for "COORDINATES: lat=X, lon=Y" lines
+2. Create ONE single map_plot_points call with ALL points in the array
+3. Do NOT limit yourself to a few points - include ALL of them (even if there are 50, 100, or more)
+4. CRITICAL: Use the exact lat/lon values from the COORDINATES lines in the context, NOT generic city coordinates
+5. Also extract the MARKER_TYPE from the context if provided
+6. Format: FUNCTION_CALL: {"name": "map_plot_points", "parameters": {"points": [{"lat": 51.67123, "lon": -1.28456, "label": "...", "marker_type": "..."}, ...], "layer_name": "descriptive name"}}
+
 You have access to a comprehensive UK places database via the geocode_place function.
 For any UK town, city, or village, use geocode_place to look up coordinates.
 
@@ -219,7 +228,19 @@ Available functions:
    Returns: Automatically plots the place on the map
 
 2. map_plot_points - Plot points on the map (use when you already have coordinates)
-   Parameters: {"points": [{"lat": 51.5074, "lon": -0.1278, "label": "Label"}], "layer_name": "Optional descriptive name"}
+   Parameters: {"points": [{"lat": 51.5074, "lon": -0.1278, "label": "Label", "marker_type": "incident"}], "layer_name": "Optional descriptive name"}
+   IMPORTANT: You can plot UNLIMITED points in a single call. If you have 10, 50, or even 100+ points from reports or data,
+   include them ALL in the points array in ONE function call. Do NOT make multiple calls for batches.
+   CRITICAL - MARKER TYPES: When plotting emergency reports, ALWAYS include the marker_type from the report metadata!
+   This provides visual distinction on the map. Available marker types:
+   - fire, building-damage, hazmat (red/orange - fires/explosions)
+   - flood, water-damage (blue - water incidents)
+   - medical, rescue, trapped (green/white - medical/rescue)
+   - security-threat, terrorist, missing-person (black - security)
+   - power-out, gas-leak, road-blocked, bridge-damage (yellow/orange - infrastructure)
+   - shelter (purple - support services)
+   Add "-critical" suffix for high severity (e.g., "fire-critical")
+   Example with many points: {"points": [{"lat": 51.67, "lon": -1.28, "label": "Fire Report", "marker_type": "fire-critical"}, {"lat": 51.68, "lon": -1.29, "label": "Medical Emergency", "marker_type": "medical"}, ...], "layer_name": "Emergency Reports"}
    Note: The system automatically generates unique IDs for each layer, so you can plot multiple point sets without conflict.
 
 3. map_draw_shape - Draw geometric shapes (PREFERRED for circles, rectangles, ellipses)

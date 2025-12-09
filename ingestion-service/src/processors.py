@@ -264,9 +264,165 @@ class GeospatialProcessor:
         logger.warning(f"Geospatial format {extension} not fully implemented yet")
         return {"status": "skipped", "reason": "Format not implemented"}
 
+class JSONProcessor:
+    """Process JSON files, especially emergency reports"""
+    
+    def get_marker_type(self, report_type, severity):
+        """
+        Map report types to military/emergency marker symbols.
+        Based on NATO APP-6 and emergency response symbology.
+        """
+        marker_map = {
+            # Fire/Explosion incidents - Red/Orange markers
+            "BUILDING_COLLAPSE": "building-damage",
+            "FIRE": "fire",
+            "HAZMAT_SPILL": "hazmat",
+            
+            # Water/Flood incidents - Blue markers
+            "FLOOD": "flood",
+            "WATER_CONTAMINATION": "water-damage",
+            
+            # Medical/Rescue - Green/White markers
+            "MEDICAL_EMERGENCY": "medical",
+            "SURVIVORS_RESCUED": "rescue",
+            "TRAPPED_VICTIMS": "trapped",
+            
+            # Security incidents - Black/Dark markers
+            "LOOTING": "security-threat",
+            "TERRORIST_INCIDENT": "terrorist",
+            "MISSING_PERSON": "missing-person",
+            
+            # Infrastructure - Yellow/Orange markers
+            "POWER_OUTAGE": "power-out",
+            "GAS_LEAK": "gas-leak",
+            "ROAD_BLOCKED": "road-blocked",
+            "BRIDGE_DAMAGE": "bridge-damage",
+            
+            # Support/Services - Purple markers
+            "SHELTER_REQUEST": "shelter",
+        }
+        
+        # Get base marker type
+        marker_type = marker_map.get(report_type, "incident")
+        
+        # Add severity modifier
+        if severity in ["HIGH", "CRITICAL"]:
+            marker_type = f"{marker_type}-critical"
+        
+        return marker_type
+    
+    def process(self, file_path: Path) -> List[Dict[str, Any]]:
+        """Extract and structure data from JSON files"""
+        import json
+        
+        with open(file_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        chunks_with_metadata = []
+        
+        # Check if this is an emergency reports file
+        if 'reports' in data and isinstance(data['reports'], list):
+            logger.info(f"Processing emergency reports JSON: {len(data['reports'])} reports found")
+            
+            # Process each report as a separate chunk
+            for i, report in enumerate(data['reports']):
+                # Create a natural language summary of the report
+                text_parts = []
+                
+                # Report header
+                text_parts.append(f"Emergency Report {report.get('report_id', f'#{i+1}')}")
+                text_parts.append(f"Type: {report.get('report_type', 'Unknown').replace('_', ' ')}")
+                text_parts.append(f"Severity: {report.get('severity', 'Unknown')}")
+                text_parts.append(f"Status: {report.get('status', 'Unknown')}")
+                text_parts.append(f"Time: {report.get('timestamp', 'Unknown')}")
+                
+                # Location
+                if 'location' in report:
+                    loc = report['location']
+                    text_parts.append(f"Location: {loc.get('address', 'Unknown address')}")
+                    text_parts.append(f"Coordinates: {loc.get('latitude', 0)}, {loc.get('longitude', 0)}")
+                
+                # Description
+                if 'description' in report:
+                    text_parts.append(f"Description: {report['description']}")
+                
+                # Personnel
+                if 'personnel' in report and report['personnel']:
+                    personnel_list = []
+                    for p in report['personnel']:
+                        personnel_list.append(f"{p.get('type', 'Unknown')} Unit {p.get('unit_id', '')} ({p.get('count', 0)} personnel)")
+                    text_parts.append(f"Personnel: {', '.join(personnel_list)}")
+                
+                # Casualties
+                if 'casualties' in report:
+                    cas = report['casualties']
+                    casualties_text = []
+                    if cas.get('fatalities', 0) > 0:
+                        casualties_text.append(f"{cas['fatalities']} fatalities")
+                    if cas.get('injured', 0) > 0:
+                        casualties_text.append(f"{cas['injured']} injured")
+                    if cas.get('rescued', 0) > 0:
+                        casualties_text.append(f"{cas['rescued']} rescued")
+                    if cas.get('missing', 0) > 0:
+                        casualties_text.append(f"{cas['missing']} missing")
+                    if casualties_text:
+                        text_parts.append(f"Casualties: {', '.join(casualties_text)}")
+                
+                # Resources needed
+                if 'resources_needed' in report and report['resources_needed']:
+                    text_parts.append(f"Resources needed: {', '.join(report['resources_needed'])}")
+                
+                # Reported by
+                if 'reported_by' in report:
+                    rb = report['reported_by']
+                    text_parts.append(f"Reported by: {rb.get('name', 'Unknown')} ({rb.get('badge_id', '')})")
+                
+                # Combine all parts
+                text = "\n".join(text_parts)
+                
+                # Create metadata with location
+                metadata = {
+                    'filename': file_path.name,
+                    'report_id': report.get('report_id', f'REPORT-{i+1}'),
+                    'report_type': report.get('report_type', 'Unknown'),
+                    'severity': report.get('severity', 'Unknown'),
+                    'status': report.get('status', 'Unknown'),
+                    'timestamp': report.get('timestamp', ''),
+                    'marker_type': self.get_marker_type(report.get('report_type', 'Unknown'), report.get('severity', 'Unknown')),
+                    'chunk_index': i
+                }
+                
+                # Add location if available
+                if 'location' in report:
+                    loc = report['location']
+                    metadata['latitude'] = loc.get('latitude')
+                    metadata['longitude'] = loc.get('longitude')
+                    metadata['address'] = loc.get('address', '')
+                
+                chunks_with_metadata.append({
+                    'text': text,
+                    'metadata': metadata
+                })
+        
+        else:
+            # Generic JSON processing - convert to text
+            text = json.dumps(data, indent=2)
+            chunks_with_metadata = [{
+                'text': text,
+                'metadata': {
+                    'filename': file_path.name,
+                    'chunk_index': 0,
+                    'type': 'generic_json'
+                }
+            }]
+        
+        logger.info(f"Created {len(chunks_with_metadata)} chunks from JSON file")
+        return chunks_with_metadata
+
 # Export processor instances
 pdf_processor = PDFProcessor()
 docx_processor = DOCXProcessor()
 excel_processor = ExcelProcessor()
 csv_processor = CSVProcessor()
 geospatial_processor = GeospatialProcessor()
+json_processor = JSONProcessor()

@@ -7,7 +7,8 @@ import { mappingAPI } from '../services/api';
 import { useMap } from '../contexts/MapContext';
 import BNGGridOverlay from './BNGGridOverlay';
 import CustomImageUpload from './CustomImageUpload';
-import TileDownloadManager from './TileDownloadManager';
+import MapInfoDisplay from './MapInfoDisplay';
+import { getMarkerIcon } from '../utils/markerIcons';
 
 // Fix for default marker icons in React-Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
@@ -126,7 +127,46 @@ function MapUpdater({ layers }) {
   return null;
 }
 
-function MapView() {
+// Track map position and update context
+function MapPositionTracker() {
+  const map = useLeafletMap();
+  const { updateMapPosition } = useMap();
+
+  useEffect(() => {
+    const updatePosition = () => {
+      const center = map.getCenter();
+      const zoom = map.getZoom();
+      const bounds = map.getBounds();
+      
+      updateMapPosition(
+        [center.lat, center.lng],
+        zoom,
+        {
+          north: bounds.getNorth(),
+          south: bounds.getSouth(),
+          east: bounds.getEast(),
+          west: bounds.getWest(),
+        }
+      );
+    };
+
+    // Initial update
+    updatePosition();
+
+    // Listen to map events
+    map.on('moveend', updatePosition);
+    map.on('zoomend', updatePosition);
+
+    return () => {
+      map.off('moveend', updatePosition);
+      map.off('zoomend', updatePosition);
+    };
+  }, [map, updateMapPosition]);
+
+  return null;
+}
+
+function MapView({ onNavigateToDownload, developerMode }) {
   const [layers, setLayers] = useState([]);
   const [markers, setMarkers] = useState([]);
   const [baseLayer, setBaseLayer] = useState('osm'); // 'osm', 'satellite', 'custom'
@@ -134,7 +174,6 @@ function MapView() {
   const [showGrid, setShowGrid] = useState(true);
   const [customImages, setCustomImages] = useState([]); // Array of {url, bounds, name}
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
-  const [downloadDialogOpen, setDownloadDialogOpen] = useState(false);
   const { mapUpdates } = useMap();
 
   const handleImageAdded = (imageData) => {
@@ -205,15 +244,17 @@ function MapView() {
               Custom ({customImages.length})
             </ToggleButton>
           </ToggleButtonGroup>
-          <Button
-            startIcon={<DownloadIcon />}
-            size="small"
-            onClick={() => setDownloadDialogOpen(true)}
-            sx={{ mt: 1, width: '100%' }}
-            variant="outlined"
-          >
-            Download Tiles
-          </Button>
+          {developerMode && (
+            <Button
+              startIcon={<DownloadIcon />}
+              size="small"
+              onClick={onNavigateToDownload}
+              sx={{ mt: 1, width: '100%' }}
+              variant="outlined"
+            >
+              Download Tiles
+            </Button>
+          )}
           <Button
             startIcon={<AddIcon />}
             size="small"
@@ -263,11 +304,6 @@ function MapView() {
         onImageAdded={handleImageAdded}
       />
 
-      <TileDownloadManager
-        open={downloadDialogOpen}
-        onClose={() => setDownloadDialogOpen(false)}
-      />
-
       <MapContainer
         center={DEFAULT_CENTER}
         zoom={DEFAULT_ZOOM}
@@ -305,6 +341,34 @@ function MapView() {
               key={layer.id}
               data={layer.data}
               style={layer.style || { color: '#3388ff' }}
+              pointToLayer={(feature, latlng) => {
+                // Use custom marker icons based on marker_type property
+                const markerType = feature.properties?.marker_type || 'default';
+                const icon = getMarkerIcon(markerType);
+                return L.marker(latlng, { icon });
+              }}
+              onEachFeature={(feature, layer) => {
+                // Add popup with feature properties
+                if (feature.properties) {
+                  const props = feature.properties;
+                  let popupContent = '';
+                  
+                  if (props.label) {
+                    popupContent += `<strong>${props.label}</strong><br/>`;
+                  }
+                  
+                  // Add other relevant properties
+                  Object.keys(props).forEach(key => {
+                    if (key !== 'label' && key !== 'marker_type' && props[key]) {
+                      popupContent += `${key}: ${props[key]}<br/>`;
+                    }
+                  });
+                  
+                  if (popupContent) {
+                    layer.bindPopup(popupContent);
+                  }
+                }
+              }}
             />
           ) : null
         )}
@@ -321,7 +385,11 @@ function MapView() {
           <BNGGridOverlay visible={showGrid} gridSize={1000} coordSystem={coordSystem} />
         )}
 
+        {/* Map Info Display */}
+        <MapInfoDisplay baseLayer={baseLayer} coordSystem={coordSystem} />
+
         <MapUpdater layers={layers} />
+        <MapPositionTracker />
       </MapContainer>
     </Box>
   );

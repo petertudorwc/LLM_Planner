@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   AppBar,
@@ -12,6 +12,9 @@ import {
   ListItemIcon,
   ListItemText,
   Button,
+  Switch,
+  FormControlLabel,
+  Divider,
 } from '@mui/material';
 import {
   Menu as MenuIcon,
@@ -20,6 +23,8 @@ import {
   Upload as UploadIcon,
   Logout as LogoutIcon,
   Layers as LayersIcon,
+  Download as DownloadIcon,
+  DeveloperMode as DeveloperModeIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -27,13 +32,24 @@ import ChatPanel from './ChatPanel';
 import MapView from './MapView';
 import UploadPanel from './UploadPanel';
 import LayersPanel from './LayersPanel';
+import TileDownloadPanel from './TileDownloadPanel';
 
 const drawerWidth = 240;
 
 function MainLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeView, setActiveView] = useState('map');
+  const [developerMode, setDeveloperMode] = useState(() => {
+    // Load developer mode from localStorage
+    const saved = localStorage.getItem('developerMode');
+    return saved === 'true';
+  });
   const { user, logout } = useAuth();
+
+  // Save developer mode to localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem('developerMode', developerMode.toString());
+  }, [developerMode]);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -43,12 +59,21 @@ function MainLayout() {
     logout();
   };
 
+  const handleDeveloperModeToggle = () => {
+    setDeveloperMode(!developerMode);
+  };
+
   const menuItems = [
     { text: 'Map View', icon: <MapIcon />, value: 'map' },
     { text: 'Chat', icon: <ChatIcon />, value: 'chat' },
     { text: 'Layers', icon: <LayersIcon />, value: 'layers' },
     { text: 'Upload Data', icon: <UploadIcon />, value: 'upload' },
   ];
+
+  // Add developer menu items if developer mode is enabled
+  if (developerMode) {
+    menuItems.push({ text: 'Download Tiles', icon: <DownloadIcon />, value: 'download' });
+  }
 
   const drawer = (
     <div>
@@ -70,6 +95,24 @@ function MainLayout() {
           </ListItem>
         ))}
       </List>
+      <Divider sx={{ my: 2 }} />
+      <Box sx={{ px: 2 }}>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={developerMode}
+              onChange={handleDeveloperModeToggle}
+              color="primary"
+            />
+          }
+          label={
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <DeveloperModeIcon fontSize="small" />
+              <Typography variant="body2">Dev Mode</Typography>
+            </Box>
+          }
+        />
+      </Box>
     </div>
   );
 
@@ -140,7 +183,10 @@ function MainLayout() {
       >
         <Toolbar />
         <Box sx={{ display: activeView === 'map' ? 'block' : 'none', height: '100%' }}>
-          <MapView />
+          <MapView 
+            onNavigateToDownload={() => setActiveView('download')} 
+            developerMode={developerMode}
+          />
         </Box>
         <Box sx={{ display: activeView === 'chat' ? 'block' : 'none', height: '100%' }}>
           <ChatPanel />
@@ -151,6 +197,11 @@ function MainLayout() {
         <Box sx={{ display: activeView === 'upload' ? 'block' : 'none', height: '100%' }}>
           <UploadPanel />
         </Box>
+        {developerMode && (
+          <Box sx={{ display: activeView === 'download' ? 'block' : 'none', height: '100%' }}>
+            <TileDownloadPanel />
+          </Box>
+        )}
       </Box>
     </Box>
   );

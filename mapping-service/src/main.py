@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, Response, BackgroundTasks
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import BaseModel
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, AsyncGenerator
 from sqlalchemy import create_engine, Column, Integer, String, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -16,6 +16,9 @@ import uuid
 import math
 from datetime import datetime
 from pathlib import Path
+import asyncio
+import aiohttp
+import random
 from .tile_downloader import download_tiles_for_area
 
 # Configure logging
@@ -320,6 +323,194 @@ async def get_tile_status():
     
     return stats
 
+# Tile download streaming endpoint
+BLOCKED_TILE_SIZE = 7412
+MIN_DELAY_BETWEEN_REQUESTS = 1.0
+MAX_DELAY_BETWEEN_REQUESTS = 2.0
+
+OSM_SERVERS = [
+    "https://a.tile.openstreetmap.org",
+    "https://b.tile.openstreetmap.org",
+    "https://c.tile.openstreetmap.org"
+]
+SATELLITE_SERVER = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile"
+
+def lat_lon_to_tile_coords(lat: float, lon: float, zoom: int) -> tuple:
+    """Convert latitude/longitude to tile coordinates"""
+    lat_rad = math.radians(lat)
+    n = 2.0 ** zoom
+    x = int((lon + 180.0) / 360.0 * n)
+    y = int((1.0 - math.asinh(math.tan(lat_rad)) / math.pi) / 2.0 * n)
+    return x, y
+
+def get_tiles_in_radius(lat: float, lon: float, radius_miles: float, zoom: int) -> list:
+    """Get all tile coordinates within a radius"""
+    # Convert radius from miles to degrees (approximate)
+    radius_lat = radius_miles / 69.0
+    radius_lon = radius_miles / (69.0 * math.cos(math.radians(lat)))
+    
+    # Get bounding box corners
+    north = lat + radius_lat
+    south = lat - radius_lat
+    east = lon + radius_lon
+    west = lon - radius_lon
+    
+    # Get tile coordinates for all four corners
+    x_nw, y_nw = lat_lon_to_tile_coords(north, west, zoom)
+    x_ne, y_ne = lat_lon_to_tile_coords(north, east, zoom)
+    x_sw, y_sw = lat_lon_to_tile_coords(south, west, zoom)
+    x_se, y_se = lat_lon_to_tile_coords(south, east, zoom)
+    
+    # Find the actual min/max tile bounds
+    min_x = min(x_nw, x_ne, x_sw, x_se)
+    max_x = max(x_nw, x_ne, x_sw, x_se)
+    min_y = min(y_nw, y_ne, y_sw, y_se)
+    max_y = max(y_nw, y_ne, y_sw, y_se)
+    
+    # Generate all tiles in the bounding box
+    tiles = []
+    for x in range(min_x, max_x + 1):
+        for y in range(min_y, max_y + 1):
+            tiles.append((x, y))
+    
+    logger.info(f"Zoom {zoom}: Calculated {len(tiles)} tiles in radius. Bounds: X[{min_x}-{max_x}], Y[{min_y}-{max_y}]")
+    
+    return tiles
+
+async def download_single_tile(session: aiohttp.ClientSession, layer: str, zoom: int, x: int, y: int) -> dict:
+    """Download a single tile"""
+    tile_path = Path(f"/app/map-tiles/{layer}/{zoom}/{x}/{y}.png")
+    
+    # Check if tile already exists
+    if tile_path.exists():
+        file_size = tile_path.stat().st_size
+        if file_size == BLOCKED_TILE_SIZE:
+            return {"status": "blocked", "size": file_size}
+        else:
+            return {"status": "skipped", "size": file_size}
+    
+    # Add delay before request
+    delay = random.uniform(MIN_DELAY_BETWEEN_REQUESTS, MAX_DELAY_BETWEEN_REQUESTS)
+    await asyncio.sleep(delay)
+    
+    # Build URL
+    if layer == "osm":
+        server = random.choice(OSM_SERVERS)
+        url = f"{server}/{zoom}/{x}/{y}.png"
+    elif layer == "satellite":
+        url = f"{SATELLITE_SERVER}/{zoom}/{y}/{x}"
+    else:
+        return {"status": "error", "error": f"Unknown layer: {layer}"}
+    
+    # Download tile
+    headers = {'User-Agent': 'DisasterReliefMappingSystem/1.0 (Training/Testing)'}
+    
+    try:
+        async with session.get(url, headers=headers, timeout=aiohttp.ClientTimeout(total=30)) as response:
+            if response.status != 200:
+                return {"status": "failed", "error": f"HTTP {response.status}"}
+            
+            content = await response.read()
+            content_length = len(content)
+            
+            # Check if blocked
+            if content_length == BLOCKED_TILE_SIZE:
+                # Save anyway to mark as blocked
+                tile_path.parent.mkdir(parents=True, exist_ok=True)
+                with open(tile_path, 'wb') as f:
+                    f.write(content)
+                return {"status": "blocked", "size": content_length}
+            
+            # Save tile
+            tile_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(tile_path, 'wb') as f:
+                f.write(content)
+            
+            return {"status": "success", "size": content_length}
+            
+    except asyncio.TimeoutError:
+        return {"status": "timeout"}
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
+
+async def stream_tile_download(lat: float, lon: float, radius_miles: float, min_zoom: int, max_zoom: int, layers: list) -> AsyncGenerator:
+    """Stream tile download progress as SSE events"""
+    
+    async with aiohttp.ClientSession() as session:
+        for layer in layers:
+            for zoom in range(min_zoom, max_zoom + 1):
+                # Get tiles for this zoom level
+                tiles = get_tiles_in_radius(lat, lon, radius_miles, zoom)
+                total_tiles = len(tiles)
+                
+                stats = {
+                    "success": 0,
+                    "skipped": 0,
+                    "blocked": 0,
+                    "failed": 0,
+                    "timeout": 0,
+                    "error": 0
+                }
+                
+                # Download tiles sequentially
+                for idx, (x, y) in enumerate(tiles):
+                    result = await download_single_tile(session, layer, zoom, x, y)
+                    stats[result["status"]] += 1
+                    
+                    # Send progress event
+                    event_data = {
+                        "type": "progress",
+                        "layer": layer,
+                        "zoom": zoom,
+                        "tile_x": x,
+                        "tile_y": y,
+                        "status": result["status"],
+                        "size": result.get("size"),
+                        "completed": idx + 1,
+                        "total_tiles": total_tiles,
+                        **stats
+                    }
+                    
+                    yield f"data: {json.dumps(event_data)}\n\n"
+                
+                # Send layer complete event
+                yield f"data: {json.dumps({'type': 'layer_complete', 'layer': layer, 'zoom': zoom, **stats})}\n\n"
+        
+        # Send completion event
+        yield f"data: {json.dumps({'type': 'complete'})}\n\n"
+
+@app.get("/tiles/download")
+async def download_tiles_stream(
+    lat: float,
+    lon: float,
+    radius_miles: float = 5.0,
+    min_zoom: int = 13,
+    max_zoom: int = 19,
+    layers: str = "osm,satellite"
+):
+    """
+    Stream tile download progress (Server-Sent Events)
+    
+    Args:
+        lat: Center latitude
+        lon: Center longitude
+        radius_miles: Radius in miles (default 5)
+        min_zoom: Minimum zoom level (default 13)
+        max_zoom: Maximum zoom level (default 19)
+        layers: Comma-separated list of layers (default "osm,satellite")
+    """
+    layer_list = layers.split(',')
+    
+    return StreamingResponse(
+        stream_tile_download(lat, lon, radius_miles, min_zoom, max_zoom, layer_list),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no"  # Disable nginx buffering
+        }
+    )
+
 # Shape generation helpers
 def generate_circle_coordinates(center_lat: float, center_lon: float, radius_miles: float, num_points: int = 32) -> List[List[float]]:
     """
@@ -536,6 +727,7 @@ async def execute_function(function_call: Dict[str, Any]):
                 },
                 "properties": {
                     "label": point.get("label", ""),
+                    "marker_type": point.get("marker_type", "default"),
                     **point.get("properties", {})
                 }
             })

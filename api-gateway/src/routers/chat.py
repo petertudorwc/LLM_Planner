@@ -45,15 +45,20 @@ async def send_message(
             else:
                 query_vector = embed_response.json()["embeddings"][0]
         
-        # Step 2: Search vector store for relevant context using the embedding
+        # Step 2: Search vector store
         context_documents = []
         if query_vector:
             async with httpx.AsyncClient() as client:
+                # Determine search limit based on query type
+                # Increase limit for "list", "all", "show me" type queries
+                query_lower = request.message.lower()
+                limit = 50 if any(word in query_lower for word in ['list', 'all', 'show me', 'every', 'plot all']) else 10
+                
                 vector_response = await client.post(
                     f"{settings.VECTOR_STORE_URL}/collections/documents/points/search",
                     json={
                         "vector": query_vector,
-                        "limit": 5,
+                        "limit": limit,
                         "with_payload": True
                     },
                     timeout=30.0
@@ -71,7 +76,22 @@ async def send_message(
                 payload = doc.get('payload', {})
                 text = payload.get('text', '')
                 score = doc.get('score', 0)
-                context_text += f"{i}. {text} (relevance: {score:.2f})\n\n"
+                
+                # Add the main text
+                context_text += f"{i}. {text}\n"
+                
+                # Add metadata if available (especially coordinates for plotting)
+                metadata = payload.get('metadata', {})
+                if metadata:
+                    if metadata.get('latitude') and metadata.get('longitude'):
+                        context_text += f"   COORDINATES: lat={metadata['latitude']}, lon={metadata['longitude']}\n"
+                    if metadata.get('marker_type'):
+                        context_text += f"   MARKER_TYPE: {metadata['marker_type']}\n"
+                    if metadata.get('report_id'):
+                        context_text += f"   REPORT_ID: {metadata['report_id']}\n"
+                
+                context_text += f"   (relevance: {score:.2f})\n\n"
+                
             context_text += "=== END CONTEXT ===\n"
         
         # Step 4: Send to LLM with context appended to message

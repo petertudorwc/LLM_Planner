@@ -4,6 +4,9 @@ const MapContext = createContext();
 
 export function MapProvider({ children }) {
   const [mapUpdates, setMapUpdates] = useState([]);
+  const [center, setCenter] = useState([51.6707, -1.2879]); // Default to Abingdon
+  const [zoom, setZoom] = useState(13);
+  const [bounds, setBounds] = useState(null);
   
   const addMapUpdate = (update) => {
     setMapUpdates(prev => [...prev, update]);
@@ -12,9 +15,23 @@ export function MapProvider({ children }) {
   const clearMapUpdates = () => {
     setMapUpdates([]);
   };
+  
+  const updateMapPosition = (newCenter, newZoom, newBounds) => {
+    if (newCenter) setCenter(newCenter);
+    if (newZoom !== undefined) setZoom(newZoom);
+    if (newBounds) setBounds(newBounds);
+  };
 
   return (
-    <MapContext.Provider value={{ mapUpdates, addMapUpdate, clearMapUpdates }}>
+    <MapContext.Provider value={{ 
+      mapUpdates, 
+      addMapUpdate, 
+      clearMapUpdates,
+      center,
+      zoom,
+      bounds,
+      updateMapPosition,
+    }}>
       {children}
     </MapContext.Provider>
   );

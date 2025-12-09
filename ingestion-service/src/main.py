@@ -7,7 +7,7 @@ import os
 from pathlib import Path
 import json
 
-from .processors import pdf_processor, docx_processor, excel_processor, csv_processor, geospatial_processor
+from .processors import pdf_processor, docx_processor, excel_processor, csv_processor, geospatial_processor, json_processor
 
 # Configure logging
 logging.basicConfig(
@@ -82,6 +82,9 @@ async def process_files(request: ProcessRequest):
             elif extension == ".csv":
                 # CSV returns chunks with metadata
                 chunks_with_metadata = csv_processor.process(file_path)
+            elif extension == ".json":
+                # JSON returns chunks with metadata
+                chunks_with_metadata = json_processor.process(file_path)
             elif extension in [".geojson", ".shp", ".kml"]:
                 # Handle geospatial files differently
                 result = await geospatial_processor.process(file_path, MAPPING_SERVICE_URL)

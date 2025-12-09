@@ -8,6 +8,7 @@ import aiohttp
 import os
 import math
 import time
+import random
 from pathlib import Path
 
 # Abingdon center coordinates
@@ -22,7 +23,7 @@ AIRFIELD_LON = -1.2831
 RADIUS_KM = 8.05
 
 # Zoom levels to download (11-15 gives good coverage without too many tiles)
-ZOOM_LEVELS = [11, 12, 13, 14, 15]
+ZOOM_LEVELS = [11, 12, 13, 14, 15 , 16, 17]
 
 # Output directory
 OUTPUT_DIR = Path(__file__).parent.parent / "map-tiles"
@@ -33,9 +34,16 @@ TILE_SOURCES = {
     "satellite": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
 }
 
-# Rate limiting: max requests per second
-MAX_REQUESTS_PER_SECOND = 2
-DELAY_BETWEEN_REQUESTS = 1.0 / MAX_REQUESTS_PER_SECOND
+# Rate limiting: Human-like browsing speed
+# Average 1 request every 3-5 seconds (much slower to avoid rate limiting)
+MIN_DELAY_BETWEEN_REQUESTS = 3.0  # Minimum 3 seconds
+MAX_DELAY_BETWEEN_REQUESTS = 5.0  # Maximum 5 seconds
+MAX_CONCURRENT_REQUESTS = 1  # Only 1 request at a time (like a single browser tab)
+
+# Blocked tile detection
+# OSM serves a specific placeholder image when rate limiting
+# This image is EXACTLY 7412 bytes for OSM tiles
+BLOCKED_TILE_SIZE = 7412  # Exact size of OSM's rate limit placeholder image
 
 # User agent (required by OSM)
 USER_AGENT = "DisasterReliefApp/1.0 (Emergency Planning Tool)"
@@ -100,7 +108,7 @@ def get_tiles_in_radius(center_lat, center_lon, radius_km, zoom):
     return tiles
 
 
-async def download_tile(session, layer, zoom, x, y, semaphore, redownload_small=False):
+async def download_tile(session, layer, zoom, x, y, redownload_small=False):
     """Download a single tile"""
     # Get URL template
     if layer == "osm":
@@ -118,47 +126,62 @@ async def download_tile(session, layer, zoom, x, y, semaphore, redownload_small=
     if tile_path.exists():
         file_size = tile_path.stat().st_size
         
-        # If it's a small/blocked image and we're redownloading
-        if file_size <= 10000 and redownload_small:
-            print(f"🔄 Re-downloading {layer}/{zoom}/{x}/{y} (was blocked: {file_size} bytes)")
+        # Check if it's the exact blocked tile size
+        is_blocked = (file_size == BLOCKED_TILE_SIZE)
+        
+        # If it's a blocked tile and we're redownloading
+        if is_blocked and redownload_small:
+            print(f"🔄 Re-downloading {layer}/{zoom}/{x}/{y} (blocked tile: {file_size} bytes = BLOCKED_TILE_SIZE)")
         # If it's a good tile, skip
-        elif file_size > 10000:
-            print(f"✓ Skip {layer}/{zoom}/{x}/{y} (already exists: {file_size} bytes)")
+        elif not is_blocked:
+            print(f"✓ Skipping {layer}/{zoom}/{x}/{y} (already have good tile: {file_size} bytes)")
             return True
-        # If it's small but we're not redownloading, skip
+        # If it's blocked but we're not redownloading, skip
         elif not redownload_small:
-            print(f"⚠ Skip {layer}/{zoom}/{x}/{y} (blocked: {file_size} bytes)")
+            print(f"⚠ Skipping {layer}/{zoom}/{x}/{y} (blocked tile: {file_size} bytes = BLOCKED_TILE_SIZE, use option 2 to re-download)")
             return False
     
     # Create directory
     tile_dir.mkdir(parents=True, exist_ok=True)
     
-    # Rate limiting
-    async with semaphore:
-        try:
-            headers = {"User-Agent": USER_AGENT}
-            async with session.get(url, headers=headers, timeout=30) as response:
-                if response.status == 200:
-                    content = await response.read()
-                    
-                    # Check if it's a valid tile (not the blocked image)
-                    if len(content) > 10000:  # Real tiles are usually > 10KB
-                        with open(tile_path, 'wb') as f:
-                            f.write(content)
-                        print(f"✓ Downloaded {layer}/{zoom}/{x}/{y} ({len(content)} bytes)")
-                        
-                        # Delay between requests
-                        await asyncio.sleep(DELAY_BETWEEN_REQUESTS)
-                        return True
-                    else:
-                        print(f"✗ Skipped {layer}/{zoom}/{x}/{y} (blocked/small image: {len(content)} bytes)")
-                        return False
-                else:
-                    print(f"✗ Failed {layer}/{zoom}/{x}/{y} (status {response.status})")
+    # Always add delay BEFORE making request (human-like behavior)
+    delay = random.uniform(MIN_DELAY_BETWEEN_REQUESTS, MAX_DELAY_BETWEEN_REQUESTS)
+    print(f"  ⏳ Waiting {delay:.1f}s before downloading {layer}/{zoom}/{x}/{y}...")
+    await asyncio.sleep(delay)
+    
+    try:
+        print(f"  🌐 Requesting {url[:80]}...")
+        headers = {"User-Agent": USER_AGENT}
+        async with session.get(url, headers=headers, timeout=30) as response:
+            print(f"  📡 Response status: {response.status}")
+            if response.status == 200:
+                content = await response.read()
+                content_length = len(content)
+                print(f"  📦 Received {content_length} bytes")
+                
+                # Check if it's the blocked tile (exact size match)
+                if content_length == BLOCKED_TILE_SIZE:
+                    # Save it anyway so we can verify
+                    with open(tile_path, 'wb') as f:
+                        f.write(content)
+                    print(f"❌ BLOCKED: Server returned blocked tile ({content_length} bytes = BLOCKED_TILE_SIZE) for {layer}/{zoom}/{x}/{y}")
+                    print(f"  💾 Saved blocked image to: {tile_path}")
                     return False
-        except Exception as e:
-            print(f"✗ Error {layer}/{zoom}/{x}/{y}: {e}")
-            return False
+                else:
+                    # Good tile - save it
+                    with open(tile_path, 'wb') as f:
+                        f.write(content)
+                    print(f"✅ SUCCESS: Downloaded {layer}/{zoom}/{x}/{y} ({content_length} bytes)")
+                    return True
+            else:
+                print(f"❌ HTTP ERROR: Status {response.status} for {layer}/{zoom}/{x}/{y}")
+                return False
+    except asyncio.TimeoutError:
+        print(f"❌ TIMEOUT: Request timed out after 30s for {layer}/{zoom}/{x}/{y}")
+        return False
+    except Exception as e:
+        print(f"❌ EXCEPTION: {type(e).__name__}: {e} for {layer}/{zoom}/{x}/{y}")
+        return False
 
 
 async def download_area_tiles(center_lat, center_lon, area_name, redownload_small=False):
@@ -180,7 +203,8 @@ async def download_area_tiles(center_lat, center_lon, area_name, redownload_smal
         print(f"Zoom {zoom}: {len(tiles)} tiles per layer")
     
     print(f"\nTotal tiles to download: {total_tiles}")
-    print(f"Estimated time at {MAX_REQUESTS_PER_SECOND} req/s: {total_tiles * DELAY_BETWEEN_REQUESTS / 60:.1f} minutes\n")
+    avg_delay = (MIN_DELAY_BETWEEN_REQUESTS + MAX_DELAY_BETWEEN_REQUESTS) / 2
+    print(f"Estimated time (avg {avg_delay:.1f}s per tile): {total_tiles * avg_delay / 60:.1f} minutes\n")
     
     # Ask for confirmation
     if not redownload_small:
@@ -189,8 +213,12 @@ async def download_area_tiles(center_lat, center_lon, area_name, redownload_smal
             print("Cancelled.")
             return
     
-    # Download tiles
-    semaphore = asyncio.Semaphore(MAX_REQUESTS_PER_SECOND)
+    # Download tiles (one at a time, sequentially - like a human browsing)
+    total_downloaded = 0
+    total_skipped_good = 0
+    total_skipped_blocked = 0
+    total_blocked = 0
+    total_errors = 0
     
     async with aiohttp.ClientSession() as session:
         for zoom in ZOOM_LEVELS:
@@ -198,24 +226,38 @@ async def download_area_tiles(center_lat, center_lon, area_name, redownload_smal
             
             print(f"\n--- Downloading zoom level {zoom} ({len(tiles)} tiles per layer) ---")
             
-            # Download OSM tiles
+            # Download OSM tiles (one at a time)
             print(f"\nOSM tiles:")
-            tasks = [download_tile(session, "osm", zoom, x, y, semaphore, redownload_small) 
-                    for x, y in tiles]
-            results = await asyncio.gather(*tasks)
-            success = sum(results)
-            print(f"OSM zoom {zoom}: {success}/{len(tiles)} successful")
+            success = 0
+            for i, (x, y) in enumerate(tiles, 1):
+                print(f"\n[{i}/{len(tiles)}] Processing osm/{zoom}/{x}/{y}")
+                result = await download_tile(session, "osm", zoom, x, y, redownload_small)
+                if result is True:
+                    success += 1
+                    total_downloaded += 1
+                elif result is False:
+                    total_blocked += 1
+            print(f"\n📊 OSM zoom {zoom}: {success}/{len(tiles)} successful")
             
-            # Download satellite tiles
+            # Download satellite tiles (one at a time)
             print(f"\nSatellite tiles:")
-            tasks = [download_tile(session, "satellite", zoom, x, y, semaphore, redownload_small) 
-                    for x, y in tiles]
-            results = await asyncio.gather(*tasks)
-            success = sum(results)
-            print(f"Satellite zoom {zoom}: {success}/{len(tiles)} successful")
+            success = 0
+            for i, (x, y) in enumerate(tiles, 1):
+                print(f"\n[{i}/{len(tiles)}] Processing satellite/{zoom}/{x}/{y}")
+                result = await download_tile(session, "satellite", zoom, x, y, redownload_small)
+                if result is True:
+                    success += 1
+                    total_downloaded += 1
+                elif result is False:
+                    total_blocked += 1
+            print(f"\n📊 Satellite zoom {zoom}: {success}/{len(tiles)} successful")
     
     print(f"\n{'='*60}")
-    print("Download complete!")
+    print("DOWNLOAD SUMMARY")
+    print(f"{'='*60}")
+    print(f"✅ Successfully downloaded: {total_downloaded}")
+    print(f"❌ Blocked/small images: {total_blocked}")
+    print(f"ℹ️  Total processed: {total_downloaded + total_blocked}")
     print(f"{'='*60}\n")
 
 
@@ -239,7 +281,7 @@ async def main():
     redownload_small = (choice == "2")
     
     if redownload_small:
-        print("\n⚠️  WARNING: This will re-download all tiles smaller than 10KB")
+        print(f"\n⚠️  WARNING: This will re-download all tiles that are exactly {BLOCKED_TILE_SIZE} bytes (OSM blocked tiles)")
         confirm = input("Are you sure? (y/n): ")
         if confirm.lower() != 'y':
             print("Cancelled.")
@@ -254,8 +296,9 @@ async def main():
 
 
 async def check_blocked_tiles():
-    """Check for blocked/small tiles in the download directory"""
+    """Check for blocked tiles in the download directory (exact size match)"""
     print("\nScanning map-tiles directory for blocked tiles...\n")
+    print(f"Looking for tiles exactly {BLOCKED_TILE_SIZE} bytes (OSM blocked tile size)\n")
     
     blocked_by_layer = {"osm": [], "satellite": []}
     
@@ -278,7 +321,8 @@ async def check_blocked_tiles():
                     y = tile_file.stem
                     file_size = tile_file.stat().st_size
                     
-                    if file_size <= 10000:
+                    # Check for exact blocked tile size
+                    if file_size == BLOCKED_TILE_SIZE:
                         blocked_by_layer[layer].append({
                             "zoom": zoom,
                             "x": x,

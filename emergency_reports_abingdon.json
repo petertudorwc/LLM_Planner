@@ -1,0 +1,2232 @@
+{
+  "scenario": "Abingdon Disaster Response Exercise",
+  "scenario_start": "2025-12-09T06:09:11.188683",
+  "location": {
+    "name": "Abingdon, Oxfordshire, UK",
+    "center_lat": 51.6708,
+    "center_lon": -1.2834,
+    "radius_miles": 2.0
+  },
+  "total_reports": 58,
+  "reports": [
+    {
+      "report_id": "RPT-00001",
+      "timestamp": "2025-12-09T19:27:31.383432",
+      "report_type": "WATER_CONTAMINATION",
+      "severity": "CRITICAL",
+      "status": "RESOLVED",
+      "location": {
+        "latitude": 51.671744,
+        "longitude": -1.247347,
+        "address": "51 Caldecott Road, Abingdon, Oxfordshire",
+        "grid_reference": "SU5158796077"
+      },
+      "personnel": [
+        {
+          "type": "Police Unit",
+          "unit_id": "CD-897",
+          "count": 3
+        }
+      ],
+      "description": "Chemical spill has contaminated water main serving Caldecott Road. Alternative water supply being arranged.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 2,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Bottled water",
+        "Water testing kits"
+      ],
+      "reported_by": {
+        "name": "Officer Wilson",
+        "badge_id": "PC-2061",
+        "contact": "+44 7893821359"
+      }
+    },
+    {
+      "report_id": "RPT-00002",
+      "timestamp": "2025-12-10T00:08:44.780082",
+      "report_type": "LOOTING",
+      "severity": "LOW",
+      "status": "RESOLVED",
+      "location": {
+        "latitude": 51.651955,
+        "longitude": -1.292506,
+        "address": "147 East St Helen Street, Abingdon, Oxfordshire",
+        "grid_reference": "SU4213291607"
+      },
+      "personnel": [
+        {
+          "type": "Police Unit",
+          "unit_id": "PU-8087",
+          "count": 3
+        }
+      ],
+      "description": "Multiple suspects seen entering damaged properties on East St Helen Street. Anti-looting patrols increased.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 0,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "General supplies",
+        "Personnel support"
+      ],
+      "reported_by": {
+        "name": "Officer Jones",
+        "badge_id": "PC-7830",
+        "contact": "+44 7157360250"
+      }
+    },
+    {
+      "report_id": "RPT-00003",
+      "timestamp": "2025-12-09T20:16:29.055797",
+      "report_type": "MEDICAL_EMERGENCY",
+      "severity": "MEDIUM",
+      "status": "RESOLVED",
+      "location": {
+        "latitude": 51.689314,
+        "longitude": -1.275229,
+        "address": "118 Thames Street, Abingdon, Oxfordshire",
+        "grid_reference": "SU5885794190"
+      },
+      "personnel": [
+        {
+          "type": "Paramedic Team",
+          "unit_id": "EMT-157",
+          "count": 4
+        }
+      ],
+      "description": "Mass casualty incident on Thames Street. Multiple injuries reported, triage area established.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 0,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Hospital beds",
+        "Blood products",
+        "Ambulances",
+        "Medical supplies"
+      ],
+      "reported_by": {
+        "name": "Officer Evans",
+        "badge_id": "PMD-3511",
+        "contact": "+44 7535804981"
+      }
+    },
+    {
+      "report_id": "RPT-00004",
+      "timestamp": "2025-12-09T14:15:28.342740",
+      "report_type": "FIRE",
+      "severity": "CRITICAL",
+      "status": "RESPONDING",
+      "location": {
+        "latitude": 51.695107,
+        "longitude": -1.267267,
+        "address": "51 Market Place, Abingdon, Oxfordshire",
+        "grid_reference": "SU4574196419"
+      },
+      "personnel": [
+        {
+          "type": "Fire Crew",
+          "unit_id": "FC-227",
+          "count": 4
+        },
+        {
+          "type": "Search & Rescue",
+          "unit_id": "SAR-46",
+          "count": 4
+        }
+      ],
+      "description": "Vehicle fire on Market Place has spread to adjacent structures. Evacuations underway.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 0,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Water tankers",
+        "Breathing apparatus"
+      ],
+      "reported_by": {
+        "name": "Officer Davies",
+        "badge_id": "PC-8830",
+        "contact": "+44 7292255144"
+      }
+    },
+    {
+      "report_id": "RPT-00005",
+      "timestamp": "2025-12-10T00:07:22.230543",
+      "report_type": "SURVIVORS_RESCUED",
+      "severity": "MEDIUM",
+      "status": "INVESTIGATING",
+      "location": {
+        "latitude": 51.680707,
+        "longitude": -1.251063,
+        "address": "50 Thames Street, Abingdon, Oxfordshire",
+        "grid_reference": "SU4606496776"
+      },
+      "personnel": [
+        {
+          "type": "Paramedic Team",
+          "unit_id": "EMT-272",
+          "count": 4
+        }
+      ],
+      "description": "Two survivors extracted from collapsed structure on Thames Street. Both conscious, receiving medical attention.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 2,
+        "missing": 0,
+        "rescued": 1
+      },
+      "resources_needed": [
+        "General supplies",
+        "Personnel support"
+      ],
+      "reported_by": {
+        "name": "Officer Smith",
+        "badge_id": "PC-3648",
+        "contact": "+44 7612160740"
+      }
+    },
+    {
+      "report_id": "RPT-00006",
+      "timestamp": "2025-12-09T16:04:11.579152",
+      "report_type": "MEDICAL_EMERGENCY",
+      "severity": "MEDIUM",
+      "status": "ACTIVE",
+      "location": {
+        "latitude": 51.681552,
+        "longitude": -1.281862,
+        "address": "109 Market Place, Abingdon, Oxfordshire",
+        "grid_reference": "SU5929398795"
+      },
+      "personnel": [
+        {
+          "type": "Paramedic Team",
+          "unit_id": "EMT-482",
+          "count": 3
+        }
+      ],
+      "description": "Multiple trauma patients from incident on Market Place. Field hospital being set up.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 10,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Medical supplies",
+        "Blood products",
+        "Hospital beds",
+        "Ambulances"
+      ],
+      "reported_by": {
+        "name": "Officer Brown",
+        "badge_id": "FC-2697",
+        "contact": "+44 7681256329"
+      }
+    },
+    {
+      "report_id": "RPT-00007",
+      "timestamp": "2025-12-09T23:03:38.883306",
+      "report_type": "MEDICAL_EMERGENCY",
+      "severity": "MEDIUM",
+      "status": "RESOLVED",
+      "location": {
+        "latitude": 51.668205,
+        "longitude": -1.292403,
+        "address": "134 East St Helen Street, Abingdon, Oxfordshire",
+        "grid_reference": "SU5367594617"
+      },
+      "personnel": [
+        {
+          "type": "Paramedic Team",
+          "unit_id": "EMT-838",
+          "count": 2
+        }
+      ],
+      "description": "Cardiac arrest patient stabilized on East St Helen Street. Air ambulance requested for transport.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 1,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Hospital beds",
+        "Medical supplies"
+      ],
+      "reported_by": {
+        "name": "Officer Brown",
+        "badge_id": "PC-1988",
+        "contact": "+44 7461537901"
+      }
+    },
+    {
+      "report_id": "RPT-00008",
+      "timestamp": "2025-12-10T05:46:54.185994",
+      "report_type": "BUILDING_COLLAPSE",
+      "severity": "HIGH",
+      "status": "ACTIVE",
+      "location": {
+        "latitude": 51.649003,
+        "longitude": -1.262536,
+        "address": "50 Ock Street, Abingdon, Oxfordshire",
+        "grid_reference": "SU4049996126"
+      },
+      "personnel": [
+        {
+          "type": "Fire Crew",
+          "unit_id": "FC-475",
+          "count": 7
+        },
+        {
+          "type": "Search & Rescue",
+          "unit_id": "SAR-55",
+          "count": 3
+        }
+      ],
+      "description": "Partial building collapse at Ock Street. Structure unstable, evacuation of adjacent buildings ordered.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 6,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Structural engineers",
+        "Heavy rescue equipment",
+        "Temporary shelter"
+      ],
+      "reported_by": {
+        "name": "Officer Johnson",
+        "badge_id": "PC-2382",
+        "contact": "+44 7705877451"
+      }
+    },
+    {
+      "report_id": "RPT-00009",
+      "timestamp": "2025-12-10T06:08:21.893226",
+      "report_type": "TRAPPED_VICTIMS",
+      "severity": "HIGH",
+      "status": "RESPONDING",
+      "location": {
+        "latitude": 51.691657,
+        "longitude": -1.278134,
+        "address": "165 Spring Road, Abingdon, Oxfordshire",
+        "grid_reference": "SU5031891582"
+      },
+      "personnel": [
+        {
+          "type": "Fire Crew",
+          "unit_id": "FC-458",
+          "count": 7
+        },
+        {
+          "type": "Search & Rescue",
+          "unit_id": "SAR-14",
+          "count": 5
+        },
+        {
+          "type": "Paramedic Team",
+          "unit_id": "EMT-771",
+          "count": 4
+        }
+      ],
+      "description": "Three people trapped in vehicle on Spring Road. Fire crews using cutting equipment for extraction.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 8,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Lighting equipment",
+        "Lifting gear"
+      ],
+      "reported_by": {
+        "name": "Officer Taylor",
+        "badge_id": "PC-6866",
+        "contact": "+44 7435760335"
+      }
+    },
+    {
+      "report_id": "RPT-00010",
+      "timestamp": "2025-12-09T20:25:22.526859",
+      "report_type": "SURVIVORS_RESCUED",
+      "severity": "LOW",
+      "status": "INVESTIGATING",
+      "location": {
+        "latitude": 51.660428,
+        "longitude": -1.268384,
+        "address": "82 Marcham Road, Abingdon, Oxfordshire",
+        "grid_reference": "SU5699792021"
+      },
+      "personnel": [
+        {
+          "type": "Paramedic Team",
+          "unit_id": "EMT-575",
+          "count": 2
+        }
+      ],
+      "description": "Two survivors extracted from collapsed structure on Marcham Road. Both conscious, receiving medical attention.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 0,
+        "missing": 0,
+        "rescued": 5
+      },
+      "resources_needed": [
+        "General supplies",
+        "Personnel support"
+      ],
+      "reported_by": {
+        "name": "Officer Davies",
+        "badge_id": "PC-5468",
+        "contact": "+44 7106524529"
+      }
+    },
+    {
+      "report_id": "RPT-00011",
+      "timestamp": "2025-12-10T04:36:38.678951",
+      "report_type": "TRAPPED_VICTIMS",
+      "severity": "CRITICAL",
+      "status": "ACTIVE",
+      "location": {
+        "latitude": 51.669745,
+        "longitude": -1.316168,
+        "address": "46 Drayton Road, Abingdon, Oxfordshire",
+        "grid_reference": "SU4763491610"
+      },
+      "personnel": [
+        {
+          "type": "Fire Crew",
+          "unit_id": "FC-436",
+          "count": 6
+        },
+        {
+          "type": "Search & Rescue",
+          "unit_id": "SAR-47",
+          "count": 3
+        },
+        {
+          "type": "Paramedic Team",
+          "unit_id": "EMT-715",
+          "count": 3
+        }
+      ],
+      "description": "Multiple victims trapped in basement on Drayton Road due to collapsed stairwell. Heavy rescue equipment deployed.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 8,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Lighting equipment",
+        "Medical supplies",
+        "Lifting gear"
+      ],
+      "reported_by": {
+        "name": "Officer Evans",
+        "badge_id": "PC-7632",
+        "contact": "+44 7369429785"
+      }
+    },
+    {
+      "report_id": "RPT-00012",
+      "timestamp": "2025-12-09T22:17:34.016158",
+      "report_type": "TRAPPED_VICTIMS",
+      "severity": "CRITICAL",
+      "status": "ACTIVE",
+      "location": {
+        "latitude": 51.659956,
+        "longitude": -1.291063,
+        "address": "86 Bridge Street, Abingdon, Oxfordshire",
+        "grid_reference": "SU5209992487"
+      },
+      "personnel": [
+        {
+          "type": "Fire Crew",
+          "unit_id": "FC-256",
+          "count": 8
+        },
+        {
+          "type": "Search & Rescue",
+          "unit_id": "SAR-19",
+          "count": 5
+        },
+        {
+          "type": "Paramedic Team",
+          "unit_id": "EMT-450",
+          "count": 4
+        }
+      ],
+      "description": "Three people trapped in vehicle on Bridge Street. Fire crews using cutting equipment for extraction.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 6,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Lifting gear",
+        "Cutting equipment",
+        "Medical supplies"
+      ],
+      "reported_by": {
+        "name": "Officer Williams",
+        "badge_id": "PC-9726",
+        "contact": "+44 7490481226"
+      }
+    },
+    {
+      "report_id": "RPT-00013",
+      "timestamp": "2025-12-09T07:28:35.228319",
+      "report_type": "POWER_OUTAGE",
+      "severity": "HIGH",
+      "status": "ACTIVE",
+      "location": {
+        "latitude": 51.675992,
+        "longitude": -1.299036,
+        "address": "186 Abbey Close, Abingdon, Oxfordshire",
+        "grid_reference": "SU4668198304"
+      },
+      "personnel": [
+        {
+          "type": "Civil Defense",
+          "unit_id": "CD-799",
+          "count": 3
+        }
+      ],
+      "description": "Downed power lines on Abbey Close creating hazardous conditions. Area cordoned off, power company notified.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 2,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "General supplies",
+        "Personnel support"
+      ],
+      "reported_by": {
+        "name": "Officer Wilson",
+        "badge_id": "PC-3732",
+        "contact": "+44 7581069139"
+      }
+    },
+    {
+      "report_id": "RPT-00014",
+      "timestamp": "2025-12-10T04:45:12.850345",
+      "report_type": "FLOOD",
+      "severity": "CRITICAL",
+      "status": "RESOLVED",
+      "location": {
+        "latitude": 51.650369,
+        "longitude": -1.305137,
+        "address": "114 Caldecott Road, Abingdon, Oxfordshire",
+        "grid_reference": "SU5214892411"
+      },
+      "personnel": [
+        {
+          "type": "Civil Defense",
+          "unit_id": "CD-992",
+          "count": 3
+        }
+      ],
+      "description": "Flash flooding reported along Caldecott Road. Road impassable, vehicles stranded.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 0,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Rescue boats",
+        "Sandbags",
+        "Pumps"
+      ],
+      "reported_by": {
+        "name": "Officer Davies",
+        "badge_id": "FC-8064",
+        "contact": "+44 7379403888"
+      }
+    },
+    {
+      "report_id": "RPT-00015",
+      "timestamp": "2025-12-10T05:29:54.594556",
+      "report_type": "BUILDING_COLLAPSE",
+      "severity": "HIGH",
+      "status": "RESOLVED",
+      "location": {
+        "latitude": 51.668068,
+        "longitude": -1.300544,
+        "address": "15 East St Helen Street, Abingdon, Oxfordshire",
+        "grid_reference": "SU4563192779"
+      },
+      "personnel": [
+        {
+          "type": "Fire Crew",
+          "unit_id": "FC-275",
+          "count": 4
+        },
+        {
+          "type": "Search & Rescue",
+          "unit_id": "SAR-70",
+          "count": 5
+        }
+      ],
+      "description": "Commercial building on East St Helen Street has suffered major structural failure. Heavy machinery required for debris removal.",
+      "casualties": {
+        "fatalities": 2,
+        "injured": 2,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Medical supplies",
+        "Temporary shelter",
+        "Structural engineers",
+        "Heavy rescue equipment"
+      ],
+      "reported_by": {
+        "name": "Officer Wilson",
+        "badge_id": "PC-7953",
+        "contact": "+44 7448280212"
+      }
+    },
+    {
+      "report_id": "RPT-00016",
+      "timestamp": "2025-12-10T01:52:34.094004",
+      "report_type": "FIRE",
+      "severity": "HIGH",
+      "status": "RESOLVED",
+      "location": {
+        "latitude": 51.651617,
+        "longitude": -1.254244,
+        "address": "112 Bridge Street, Abingdon, Oxfordshire",
+        "grid_reference": "SU4513797225"
+      },
+      "personnel": [
+        {
+          "type": "Fire Crew",
+          "unit_id": "FC-182",
+          "count": 7
+        },
+        {
+          "type": "Search & Rescue",
+          "unit_id": "SAR-32",
+          "count": 5
+        }
+      ],
+      "description": "Vehicle fire on Bridge Street has spread to adjacent structures. Evacuations underway.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 2,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Water tankers",
+        "Thermal imaging"
+      ],
+      "reported_by": {
+        "name": "Officer Johnson",
+        "badge_id": "PMD-1139",
+        "contact": "+44 7401306283"
+      }
+    },
+    {
+      "report_id": "RPT-00017",
+      "timestamp": "2025-12-09T08:57:12.066581",
+      "report_type": "BUILDING_COLLAPSE",
+      "severity": "CRITICAL",
+      "status": "RESOLVED",
+      "location": {
+        "latitude": 51.67416,
+        "longitude": -1.246714,
+        "address": "125 Park Road, Abingdon, Oxfordshire",
+        "grid_reference": "SU4991698066"
+      },
+      "personnel": [
+        {
+          "type": "Fire Crew",
+          "unit_id": "FC-389",
+          "count": 5
+        },
+        {
+          "type": "Search & Rescue",
+          "unit_id": "SAR-94",
+          "count": 3
+        }
+      ],
+      "description": "Commercial building on Park Road has suffered major structural failure. Heavy machinery required for debris removal.",
+      "casualties": {
+        "fatalities": 3,
+        "injured": 3,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Medical supplies",
+        "Temporary shelter"
+      ],
+      "reported_by": {
+        "name": "Officer Smith",
+        "badge_id": "PMD-6263",
+        "contact": "+44 7715721077"
+      }
+    },
+    {
+      "report_id": "RPT-00018",
+      "timestamp": "2025-12-09T12:44:31.641441",
+      "report_type": "TRAPPED_VICTIMS",
+      "severity": "CRITICAL",
+      "status": "RESOLVED",
+      "location": {
+        "latitude": 51.678584,
+        "longitude": -1.252085,
+        "address": "138 Peachcroft Road, Abingdon, Oxfordshire",
+        "grid_reference": "SU4701091354"
+      },
+      "personnel": [
+        {
+          "type": "Fire Crew",
+          "unit_id": "FC-541",
+          "count": 8
+        },
+        {
+          "type": "Search & Rescue",
+          "unit_id": "SAR-87",
+          "count": 4
+        },
+        {
+          "type": "Paramedic Team",
+          "unit_id": "EMT-496",
+          "count": 2
+        }
+      ],
+      "description": "Multiple victims trapped in basement on Peachcroft Road due to collapsed stairwell. Heavy rescue equipment deployed.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 6,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Lifting gear",
+        "Medical supplies",
+        "Cutting equipment",
+        "Lighting equipment"
+      ],
+      "reported_by": {
+        "name": "Officer Smith",
+        "badge_id": "FC-5814",
+        "contact": "+44 7201579431"
+      }
+    },
+    {
+      "report_id": "RPT-00019",
+      "timestamp": "2025-12-10T05:01:13.369834",
+      "report_type": "SURVIVORS_RESCUED",
+      "severity": "LOW",
+      "status": "INVESTIGATING",
+      "location": {
+        "latitude": 51.667758,
+        "longitude": -1.292315,
+        "address": "110 Spring Road, Abingdon, Oxfordshire",
+        "grid_reference": "SU5242996923"
+      },
+      "personnel": [
+        {
+          "type": "Paramedic Team",
+          "unit_id": "EMT-666",
+          "count": 2
+        }
+      ],
+      "description": "Family of four rescued from flooded property on Spring Road. Minor injuries, transported to hospital.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 2,
+        "missing": 0,
+        "rescued": 3
+      },
+      "resources_needed": [
+        "General supplies",
+        "Personnel support"
+      ],
+      "reported_by": {
+        "name": "Officer Thomas",
+        "badge_id": "FC-6097",
+        "contact": "+44 7598408434"
+      }
+    },
+    {
+      "report_id": "RPT-00020",
+      "timestamp": "2025-12-10T01:08:29.416226",
+      "report_type": "MEDICAL_EMERGENCY",
+      "severity": "HIGH",
+      "status": "ACTIVE",
+      "location": {
+        "latitude": 51.699699,
+        "longitude": -1.285284,
+        "address": "200 Ock Street, Abingdon, Oxfordshire",
+        "grid_reference": "SU5705490955"
+      },
+      "personnel": [
+        {
+          "type": "Paramedic Team",
+          "unit_id": "EMT-198",
+          "count": 2
+        }
+      ],
+      "description": "Mass casualty incident on Ock Street. Multiple injuries reported, triage area established.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 9,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Blood products",
+        "Medical supplies"
+      ],
+      "reported_by": {
+        "name": "Officer Taylor",
+        "badge_id": "FC-1116",
+        "contact": "+44 7345574953"
+      }
+    },
+    {
+      "report_id": "RPT-00021",
+      "timestamp": "2025-12-09T14:07:09.134507",
+      "report_type": "POWER_OUTAGE",
+      "severity": "CRITICAL",
+      "status": "ACTIVE",
+      "location": {
+        "latitude": 51.673456,
+        "longitude": -1.284692,
+        "address": "97 Marcham Road, Abingdon, Oxfordshire",
+        "grid_reference": "SU5925694465"
+      },
+      "personnel": [
+        {
+          "type": "Police Unit",
+          "unit_id": "CD-645",
+          "count": 3
+        }
+      ],
+      "description": "Complete power outage affecting Marcham Road and surrounding area. Estimated 500+ properties affected.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 2,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "General supplies",
+        "Personnel support"
+      ],
+      "reported_by": {
+        "name": "Officer Evans",
+        "badge_id": "PMD-5033",
+        "contact": "+44 7113432175"
+      }
+    },
+    {
+      "report_id": "RPT-00022",
+      "timestamp": "2025-12-09T17:39:26.613822",
+      "report_type": "FIRE",
+      "severity": "HIGH",
+      "status": "RESOLVED",
+      "location": {
+        "latitude": 51.689909,
+        "longitude": -1.307014,
+        "address": "162 West St Helen Street, Abingdon, Oxfordshire",
+        "grid_reference": "SU4791593526"
+      },
+      "personnel": [
+        {
+          "type": "Fire Crew",
+          "unit_id": "FC-986",
+          "count": 4
+        },
+        {
+          "type": "Search & Rescue",
+          "unit_id": "SAR-69",
+          "count": 5
+        }
+      ],
+      "description": "Vehicle fire on West St Helen Street has spread to adjacent structures. Evacuations underway.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 2,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Thermal imaging",
+        "First aid kits"
+      ],
+      "reported_by": {
+        "name": "Officer Thomas",
+        "badge_id": "PMD-7086",
+        "contact": "+44 7922911322"
+      }
+    },
+    {
+      "report_id": "RPT-00023",
+      "timestamp": "2025-12-09T22:41:27.436426",
+      "report_type": "MEDICAL_EMERGENCY",
+      "severity": "CRITICAL",
+      "status": "ACTIVE",
+      "location": {
+        "latitude": 51.656043,
+        "longitude": -1.311708,
+        "address": "108 Abbey Close, Abingdon, Oxfordshire",
+        "grid_reference": "SU5388096019"
+      },
+      "personnel": [
+        {
+          "type": "Paramedic Team",
+          "unit_id": "EMT-338",
+          "count": 2
+        }
+      ],
+      "description": "Multiple trauma patients from incident on Abbey Close. Field hospital being set up.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 3,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Hospital beds",
+        "Medical supplies",
+        "Blood products",
+        "Ambulances"
+      ],
+      "reported_by": {
+        "name": "Officer Taylor",
+        "badge_id": "PC-9642",
+        "contact": "+44 7865408097"
+      }
+    },
+    {
+      "report_id": "RPT-00024",
+      "timestamp": "2025-12-10T02:25:50.597070",
+      "report_type": "SHELTER_REQUEST",
+      "severity": "CRITICAL",
+      "status": "RESPONDING",
+      "location": {
+        "latitude": 51.665916,
+        "longitude": -1.246037,
+        "address": "152 Park Road, Abingdon, Oxfordshire",
+        "grid_reference": "SU5879195343"
+      },
+      "personnel": [
+        {
+          "type": "Civil Defense",
+          "unit_id": "CD-224",
+          "count": 4
+        }
+      ],
+      "description": "Group of 15 residents from Park Road need temporary accommodation. Currently at evacuation center.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 1,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Blankets",
+        "Emergency housing"
+      ],
+      "reported_by": {
+        "name": "Officer Williams",
+        "badge_id": "PC-6875",
+        "contact": "+44 7960739097"
+      }
+    },
+    {
+      "report_id": "RPT-00025",
+      "timestamp": "2025-12-09T18:42:55.726915",
+      "report_type": "BRIDGE_DAMAGE",
+      "severity": "LOW",
+      "status": "ACTIVE",
+      "location": {
+        "latitude": 51.696746,
+        "longitude": -1.267994,
+        "address": "173 Bridge Street, Abingdon, Oxfordshire",
+        "grid_reference": "SU4371695970"
+      },
+      "personnel": [
+        {
+          "type": "Civil Defense",
+          "unit_id": "CD-678",
+          "count": 3
+        }
+      ],
+      "description": "Critical structural damage to bridge on Bridge Street. Bridge closed to all traffic, engineers assessing.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 0,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Inspection equipment",
+        "Structural engineers"
+      ],
+      "reported_by": {
+        "name": "Officer Taylor",
+        "badge_id": "FC-6935",
+        "contact": "+44 7206089239"
+      }
+    },
+    {
+      "report_id": "RPT-00026",
+      "timestamp": "2025-12-09T11:28:16.146967",
+      "report_type": "SURVIVORS_RESCUED",
+      "severity": "MEDIUM",
+      "status": "RESOLVED",
+      "location": {
+        "latitude": 51.668256,
+        "longitude": -1.292713,
+        "address": "17 Bath Street, Abingdon, Oxfordshire",
+        "grid_reference": "SU4145594521"
+      },
+      "personnel": [
+        {
+          "type": "Paramedic Team",
+          "unit_id": "EMT-542",
+          "count": 3
+        }
+      ],
+      "description": "Two survivors extracted from collapsed structure on Bath Street. Both conscious, receiving medical attention.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 3,
+        "missing": 0,
+        "rescued": 5
+      },
+      "resources_needed": [
+        "General supplies",
+        "Personnel support"
+      ],
+      "reported_by": {
+        "name": "Officer Smith",
+        "badge_id": "PC-2991",
+        "contact": "+44 7364831824"
+      }
+    },
+    {
+      "report_id": "RPT-00027",
+      "timestamp": "2025-12-09T18:11:45.073514",
+      "report_type": "ROAD_BLOCKED",
+      "severity": "HIGH",
+      "status": "RESOLVED",
+      "location": {
+        "latitude": 51.66341,
+        "longitude": -1.2571,
+        "address": "139 Market Place, Abingdon, Oxfordshire",
+        "grid_reference": "SU4600490067"
+      },
+      "personnel": [
+        {
+          "type": "Police Unit",
+          "unit_id": "CD-509",
+          "count": 4
+        }
+      ],
+      "description": "Bridge approach on Market Place blocked by structural damage. Road closed indefinitely pending assessment.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 0,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Alternative route signs",
+        "Heavy machinery"
+      ],
+      "reported_by": {
+        "name": "Officer Brown",
+        "badge_id": "FC-2960",
+        "contact": "+44 7234465233"
+      }
+    },
+    {
+      "report_id": "RPT-00028",
+      "timestamp": "2025-12-09T14:07:31.000300",
+      "report_type": "MEDICAL_EMERGENCY",
+      "severity": "LOW",
+      "status": "RESPONDING",
+      "location": {
+        "latitude": 51.652998,
+        "longitude": -1.289513,
+        "address": "30 Vineyard, Abingdon, Oxfordshire",
+        "grid_reference": "SU4145590076"
+      },
+      "personnel": [
+        {
+          "type": "Paramedic Team",
+          "unit_id": "EMT-296",
+          "count": 3
+        }
+      ],
+      "description": "Mass casualty incident on Vineyard. Multiple injuries reported, triage area established.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 7,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Blood products",
+        "Medical supplies"
+      ],
+      "reported_by": {
+        "name": "Officer Brown",
+        "badge_id": "PC-4808",
+        "contact": "+44 7748250106"
+      }
+    },
+    {
+      "report_id": "RPT-00029",
+      "timestamp": "2025-12-09T14:49:36.024048",
+      "report_type": "SHELTER_REQUEST",
+      "severity": "HIGH",
+      "status": "RESPONDING",
+      "location": {
+        "latitude": 51.681167,
+        "longitude": -1.305121,
+        "address": "105 Oxford Road, Abingdon, Oxfordshire",
+        "grid_reference": "SU5655093955"
+      },
+      "personnel": [
+        {
+          "type": "Police Unit",
+          "unit_id": "CD-500",
+          "count": 3
+        }
+      ],
+      "description": "Family evacuated from Oxford Road requiring emergency shelter. 4 adults, 2 children, pet dog.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 3,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Blankets",
+        "Emergency housing",
+        "Food supplies",
+        "Medical screening"
+      ],
+      "reported_by": {
+        "name": "Officer Davies",
+        "badge_id": "PMD-3601",
+        "contact": "+44 7358959353"
+      }
+    },
+    {
+      "report_id": "RPT-00030",
+      "timestamp": "2025-12-09T20:35:39.224059",
+      "report_type": "MEDICAL_EMERGENCY",
+      "severity": "CRITICAL",
+      "status": "RESPONDING",
+      "location": {
+        "latitude": 51.661754,
+        "longitude": -1.30928,
+        "address": "130 Ock Street, Abingdon, Oxfordshire",
+        "grid_reference": "SU4545797874"
+      },
+      "personnel": [
+        {
+          "type": "Paramedic Team",
+          "unit_id": "EMT-672",
+          "count": 2
+        }
+      ],
+      "description": "Multiple trauma patients from incident on Ock Street. Field hospital being set up.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 7,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Medical supplies",
+        "Blood products"
+      ],
+      "reported_by": {
+        "name": "Officer Davies",
+        "badge_id": "FC-7043",
+        "contact": "+44 7326787599"
+      }
+    },
+    {
+      "report_id": "RPT-00031",
+      "timestamp": "2025-12-10T04:46:57.144306",
+      "report_type": "SURVIVORS_RESCUED",
+      "severity": "LOW",
+      "status": "RESOLVED",
+      "location": {
+        "latitude": 51.67523,
+        "longitude": -1.260018,
+        "address": "126 High Street, Abingdon, Oxfordshire",
+        "grid_reference": "SU5180490699"
+      },
+      "personnel": [
+        {
+          "type": "Paramedic Team",
+          "unit_id": "EMT-998",
+          "count": 2
+        }
+      ],
+      "description": "Two survivors extracted from collapsed structure on High Street. Both conscious, receiving medical attention.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 3,
+        "missing": 0,
+        "rescued": 4
+      },
+      "resources_needed": [
+        "General supplies",
+        "Personnel support"
+      ],
+      "reported_by": {
+        "name": "Officer Williams",
+        "badge_id": "PMD-4380",
+        "contact": "+44 7213700473"
+      }
+    },
+    {
+      "report_id": "RPT-00032",
+      "timestamp": "2025-12-10T02:49:21.153610",
+      "report_type": "SURVIVORS_RESCUED",
+      "severity": "MEDIUM",
+      "status": "INVESTIGATING",
+      "location": {
+        "latitude": 51.643221,
+        "longitude": -1.284108,
+        "address": "34 Spring Road, Abingdon, Oxfordshire",
+        "grid_reference": "SU4362391125"
+      },
+      "personnel": [
+        {
+          "type": "Paramedic Team",
+          "unit_id": "EMT-904",
+          "count": 3
+        }
+      ],
+      "description": "Two survivors extracted from collapsed structure on Spring Road. Both conscious, receiving medical attention.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 0,
+        "missing": 0,
+        "rescued": 5
+      },
+      "resources_needed": [
+        "General supplies",
+        "Personnel support"
+      ],
+      "reported_by": {
+        "name": "Officer Jones",
+        "badge_id": "PMD-5100",
+        "contact": "+44 7425283253"
+      }
+    },
+    {
+      "report_id": "RPT-00033",
+      "timestamp": "2025-12-09T14:15:23.520586",
+      "report_type": "MISSING_PERSON",
+      "severity": "MEDIUM",
+      "status": "INVESTIGATING",
+      "location": {
+        "latitude": 51.680097,
+        "longitude": -1.24792,
+        "address": "97 High Street, Abingdon, Oxfordshire",
+        "grid_reference": "SU5159892690"
+      },
+      "personnel": [
+        {
+          "type": "Police Unit",
+          "unit_id": "PU-1368",
+          "count": 4
+        }
+      ],
+      "description": "Child reported missing near High Street. Last seen 2 hours ago wearing blue jacket. Search teams deployed.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 0,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "General supplies",
+        "Personnel support"
+      ],
+      "reported_by": {
+        "name": "Officer Williams",
+        "badge_id": "PMD-7848",
+        "contact": "+44 7525490427"
+      }
+    },
+    {
+      "report_id": "RPT-00034",
+      "timestamp": "2025-12-09T15:48:01.648391",
+      "report_type": "SURVIVORS_RESCUED",
+      "severity": "HIGH",
+      "status": "ACTIVE",
+      "location": {
+        "latitude": 51.673884,
+        "longitude": -1.321586,
+        "address": "190 Ock Street, Abingdon, Oxfordshire",
+        "grid_reference": "SU5898396674"
+      },
+      "personnel": [
+        {
+          "type": "Paramedic Team",
+          "unit_id": "EMT-910",
+          "count": 2
+        }
+      ],
+      "description": "Family of four rescued from flooded property on Ock Street. Minor injuries, transported to hospital.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 0,
+        "missing": 0,
+        "rescued": 3
+      },
+      "resources_needed": [
+        "General supplies",
+        "Personnel support"
+      ],
+      "reported_by": {
+        "name": "Officer Johnson",
+        "badge_id": "PMD-8553",
+        "contact": "+44 7292460700"
+      }
+    },
+    {
+      "report_id": "RPT-00035",
+      "timestamp": "2025-12-09T22:52:51.387160",
+      "report_type": "SURVIVORS_RESCUED",
+      "severity": "HIGH",
+      "status": "RESOLVED",
+      "location": {
+        "latitude": 51.676703,
+        "longitude": -1.279809,
+        "address": "167 Thames Street, Abingdon, Oxfordshire",
+        "grid_reference": "SU5106695228"
+      },
+      "personnel": [
+        {
+          "type": "Paramedic Team",
+          "unit_id": "EMT-936",
+          "count": 4
+        }
+      ],
+      "description": "Family of four rescued from flooded property on Thames Street. Minor injuries, transported to hospital.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 3,
+        "missing": 0,
+        "rescued": 5
+      },
+      "resources_needed": [
+        "General supplies",
+        "Personnel support"
+      ],
+      "reported_by": {
+        "name": "Officer Smith",
+        "badge_id": "PC-6432",
+        "contact": "+44 7489174200"
+      }
+    },
+    {
+      "report_id": "RPT-00036",
+      "timestamp": "2025-12-09T07:40:45.195677",
+      "report_type": "BUILDING_COLLAPSE",
+      "severity": "HIGH",
+      "status": "RESOLVED",
+      "location": {
+        "latitude": 51.677797,
+        "longitude": -1.306815,
+        "address": "186 Bath Street, Abingdon, Oxfordshire",
+        "grid_reference": "SU5665896606"
+      },
+      "personnel": [
+        {
+          "type": "Fire Crew",
+          "unit_id": "FC-492",
+          "count": 7
+        },
+        {
+          "type": "Search & Rescue",
+          "unit_id": "SAR-81",
+          "count": 5
+        }
+      ],
+      "description": "Partial building collapse at Bath Street. Structure unstable, evacuation of adjacent buildings ordered.",
+      "casualties": {
+        "fatalities": 4,
+        "injured": 5,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Temporary shelter",
+        "Structural engineers"
+      ],
+      "reported_by": {
+        "name": "Officer Thomas",
+        "badge_id": "FC-9046",
+        "contact": "+44 7635541733"
+      }
+    },
+    {
+      "report_id": "RPT-00037",
+      "timestamp": "2025-12-10T04:03:59.140350",
+      "report_type": "SURVIVORS_RESCUED",
+      "severity": "MEDIUM",
+      "status": "RESOLVED",
+      "location": {
+        "latitude": 51.65738,
+        "longitude": -1.282255,
+        "address": "139 Drayton Road, Abingdon, Oxfordshire",
+        "grid_reference": "SU4631392302"
+      },
+      "personnel": [
+        {
+          "type": "Paramedic Team",
+          "unit_id": "EMT-357",
+          "count": 2
+        }
+      ],
+      "description": "Elderly couple found alive in debris on Drayton Road. Search and rescue team assisted by K9 unit.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 2,
+        "missing": 0,
+        "rescued": 1
+      },
+      "resources_needed": [
+        "General supplies",
+        "Personnel support"
+      ],
+      "reported_by": {
+        "name": "Officer Wilson",
+        "badge_id": "PC-5916",
+        "contact": "+44 7502487597"
+      }
+    },
+    {
+      "report_id": "RPT-00038",
+      "timestamp": "2025-12-09T19:27:59.035114",
+      "report_type": "SHELTER_REQUEST",
+      "severity": "CRITICAL",
+      "status": "RESPONDING",
+      "location": {
+        "latitude": 51.663461,
+        "longitude": -1.254276,
+        "address": "177 Radley Road, Abingdon, Oxfordshire",
+        "grid_reference": "SU5578695670"
+      },
+      "personnel": [
+        {
+          "type": "Police Unit",
+          "unit_id": "CD-424",
+          "count": 3
+        }
+      ],
+      "description": "Family evacuated from Radley Road requiring emergency shelter. 4 adults, 2 children, pet dog.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 2,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Food supplies",
+        "Emergency housing",
+        "Blankets",
+        "Medical screening"
+      ],
+      "reported_by": {
+        "name": "Officer Brown",
+        "badge_id": "PC-2088",
+        "contact": "+44 7742070149"
+      }
+    },
+    {
+      "report_id": "RPT-00039",
+      "timestamp": "2025-12-09T21:08:48.185752",
+      "report_type": "SHELTER_REQUEST",
+      "severity": "CRITICAL",
+      "status": "ACTIVE",
+      "location": {
+        "latitude": 51.68577,
+        "longitude": -1.283035,
+        "address": "30 Wantage Road, Abingdon, Oxfordshire",
+        "grid_reference": "SU4285390726"
+      },
+      "personnel": [
+        {
+          "type": "Civil Defense",
+          "unit_id": "CD-325",
+          "count": 3
+        }
+      ],
+      "description": "Elderly residents from care home on Wantage Road require alternative accommodation. 8 people, medical needs.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 0,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Medical screening",
+        "Food supplies",
+        "Blankets"
+      ],
+      "reported_by": {
+        "name": "Officer Davies",
+        "badge_id": "PMD-1657",
+        "contact": "+44 7982325162"
+      }
+    },
+    {
+      "report_id": "RPT-00040",
+      "timestamp": "2025-12-10T00:54:35.460186",
+      "report_type": "SURVIVORS_RESCUED",
+      "severity": "HIGH",
+      "status": "ACTIVE",
+      "location": {
+        "latitude": 51.664585,
+        "longitude": -1.264272,
+        "address": "1 Bath Street, Abingdon, Oxfordshire",
+        "grid_reference": "SU5054697452"
+      },
+      "personnel": [
+        {
+          "type": "Paramedic Team",
+          "unit_id": "EMT-728",
+          "count": 4
+        }
+      ],
+      "description": "Family of four rescued from flooded property on Bath Street. Minor injuries, transported to hospital.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 2,
+        "missing": 0,
+        "rescued": 2
+      },
+      "resources_needed": [
+        "General supplies",
+        "Personnel support"
+      ],
+      "reported_by": {
+        "name": "Officer Wilson",
+        "badge_id": "PC-3820",
+        "contact": "+44 7809910865"
+      }
+    },
+    {
+      "report_id": "RPT-00041",
+      "timestamp": "2025-12-09T09:53:23.822115",
+      "report_type": "HAZMAT_SPILL",
+      "severity": "CRITICAL",
+      "status": "INVESTIGATING",
+      "location": {
+        "latitude": 51.680982,
+        "longitude": -1.301226,
+        "address": "37 Radley Road, Abingdon, Oxfordshire",
+        "grid_reference": "SU4849195950"
+      },
+      "personnel": [
+        {
+          "type": "Hazmat Team",
+          "unit_id": "HZ-54",
+          "count": 5
+        }
+      ],
+      "description": "Chemical spill reported on Radley Road. Unknown substance, hazmat team conducting assessment.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 2,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Protective equipment",
+        "Decontamination units"
+      ],
+      "reported_by": {
+        "name": "Officer Johnson",
+        "badge_id": "PC-1584",
+        "contact": "+44 7673301716"
+      }
+    },
+    {
+      "report_id": "RPT-00042",
+      "timestamp": "2025-12-09T18:08:11.344704",
+      "report_type": "SURVIVORS_RESCUED",
+      "severity": "HIGH",
+      "status": "RESOLVED",
+      "location": {
+        "latitude": 51.664818,
+        "longitude": -1.251429,
+        "address": "93 Bath Street, Abingdon, Oxfordshire",
+        "grid_reference": "SU4524092025"
+      },
+      "personnel": [
+        {
+          "type": "Paramedic Team",
+          "unit_id": "EMT-996",
+          "count": 4
+        }
+      ],
+      "description": "Two survivors extracted from collapsed structure on Bath Street. Both conscious, receiving medical attention.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 0,
+        "missing": 0,
+        "rescued": 5
+      },
+      "resources_needed": [
+        "General supplies",
+        "Personnel support"
+      ],
+      "reported_by": {
+        "name": "Officer Jones",
+        "badge_id": "PC-6733",
+        "contact": "+44 7379434284"
+      }
+    },
+    {
+      "report_id": "RPT-00043",
+      "timestamp": "2025-12-10T01:21:34.078471",
+      "report_type": "SURVIVORS_RESCUED",
+      "severity": "LOW",
+      "status": "RESPONDING",
+      "location": {
+        "latitude": 51.674538,
+        "longitude": -1.327338,
+        "address": "26 Bath Street, Abingdon, Oxfordshire",
+        "grid_reference": "SU5112197224"
+      },
+      "personnel": [
+        {
+          "type": "Paramedic Team",
+          "unit_id": "EMT-540",
+          "count": 4
+        }
+      ],
+      "description": "Family of four rescued from flooded property on Bath Street. Minor injuries, transported to hospital.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 2,
+        "missing": 0,
+        "rescued": 2
+      },
+      "resources_needed": [
+        "General supplies",
+        "Personnel support"
+      ],
+      "reported_by": {
+        "name": "Officer Davies",
+        "badge_id": "PC-5637",
+        "contact": "+44 7930479484"
+      }
+    },
+    {
+      "report_id": "RPT-00044",
+      "timestamp": "2025-12-10T01:01:40.560867",
+      "report_type": "MEDICAL_EMERGENCY",
+      "severity": "CRITICAL",
+      "status": "INVESTIGATING",
+      "location": {
+        "latitude": 51.674888,
+        "longitude": -1.241439,
+        "address": "140 Radley Road, Abingdon, Oxfordshire",
+        "grid_reference": "SU4811692488"
+      },
+      "personnel": [
+        {
+          "type": "Paramedic Team",
+          "unit_id": "EMT-106",
+          "count": 4
+        }
+      ],
+      "description": "Mass casualty incident on Radley Road. Multiple injuries reported, triage area established.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 9,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Medical supplies",
+        "Blood products",
+        "Hospital beds"
+      ],
+      "reported_by": {
+        "name": "Officer Wilson",
+        "badge_id": "PMD-9261",
+        "contact": "+44 7774754292"
+      }
+    },
+    {
+      "report_id": "RPT-00045",
+      "timestamp": "2025-12-10T01:07:13.150112",
+      "report_type": "SURVIVORS_RESCUED",
+      "severity": "LOW",
+      "status": "RESPONDING",
+      "location": {
+        "latitude": 51.664191,
+        "longitude": -1.256695,
+        "address": "200 Bath Street, Abingdon, Oxfordshire",
+        "grid_reference": "SU4450198036"
+      },
+      "personnel": [
+        {
+          "type": "Paramedic Team",
+          "unit_id": "EMT-347",
+          "count": 4
+        }
+      ],
+      "description": "Family of four rescued from flooded property on Bath Street. Minor injuries, transported to hospital.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 1,
+        "missing": 0,
+        "rescued": 2
+      },
+      "resources_needed": [
+        "General supplies",
+        "Personnel support"
+      ],
+      "reported_by": {
+        "name": "Officer Johnson",
+        "badge_id": "FC-8139",
+        "contact": "+44 7915100998"
+      }
+    },
+    {
+      "report_id": "RPT-00046",
+      "timestamp": "2025-12-10T00:16:16.217920",
+      "report_type": "MEDICAL_EMERGENCY",
+      "severity": "HIGH",
+      "status": "INVESTIGATING",
+      "location": {
+        "latitude": 51.672788,
+        "longitude": -1.291152,
+        "address": "26 Drayton Road, Abingdon, Oxfordshire",
+        "grid_reference": "SU4943591242"
+      },
+      "personnel": [
+        {
+          "type": "Paramedic Team",
+          "unit_id": "EMT-361",
+          "count": 2
+        }
+      ],
+      "description": "Multiple trauma patients from incident on Drayton Road. Field hospital being set up.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 10,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Blood products",
+        "Ambulances"
+      ],
+      "reported_by": {
+        "name": "Officer Jones",
+        "badge_id": "PC-6265",
+        "contact": "+44 7724867117"
+      }
+    },
+    {
+      "report_id": "RPT-00047",
+      "timestamp": "2025-12-09T14:46:51.999820",
+      "report_type": "MISSING_PERSON",
+      "severity": "LOW",
+      "status": "ACTIVE",
+      "location": {
+        "latitude": 51.667804,
+        "longitude": -1.305018,
+        "address": "175 Peachcroft Road, Abingdon, Oxfordshire",
+        "grid_reference": "SU4466998488"
+      },
+      "personnel": [
+        {
+          "type": "Police Unit",
+          "unit_id": "PU-9044",
+          "count": 5
+        }
+      ],
+      "description": "Elderly person with dementia missing from care facility on Peachcroft Road. Vulnerable adult, immediate search initiated.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 0,
+        "missing": 3,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "General supplies",
+        "Personnel support"
+      ],
+      "reported_by": {
+        "name": "Officer Thomas",
+        "badge_id": "PC-7495",
+        "contact": "+44 7940305056"
+      }
+    },
+    {
+      "report_id": "RPT-00048",
+      "timestamp": "2025-12-09T15:26:49.818628",
+      "report_type": "LOOTING",
+      "severity": "HIGH",
+      "status": "INVESTIGATING",
+      "location": {
+        "latitude": 51.659961,
+        "longitude": -1.26843,
+        "address": "37 Oxford Road, Abingdon, Oxfordshire",
+        "grid_reference": "SU5951396605"
+      },
+      "personnel": [
+        {
+          "type": "Police Unit",
+          "unit_id": "PU-7974",
+          "count": 2
+        }
+      ],
+      "description": "Multiple suspects seen entering damaged properties on Oxford Road. Anti-looting patrols increased.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 0,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "General supplies",
+        "Personnel support"
+      ],
+      "reported_by": {
+        "name": "Officer Wilson",
+        "badge_id": "FC-9375",
+        "contact": "+44 7687591374"
+      }
+    },
+    {
+      "report_id": "RPT-00049",
+      "timestamp": "2025-12-09T19:21:15.247760",
+      "report_type": "SHELTER_REQUEST",
+      "severity": "LOW",
+      "status": "RESOLVED",
+      "location": {
+        "latitude": 51.662019,
+        "longitude": -1.311617,
+        "address": "196 Vineyard, Abingdon, Oxfordshire",
+        "grid_reference": "SU4964293526"
+      },
+      "personnel": [
+        {
+          "type": "Police Unit",
+          "unit_id": "CD-570",
+          "count": 2
+        }
+      ],
+      "description": "Family evacuated from Vineyard requiring emergency shelter. 4 adults, 2 children, pet dog.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 0,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Blankets",
+        "Medical screening",
+        "Emergency housing",
+        "Food supplies"
+      ],
+      "reported_by": {
+        "name": "Officer Jones",
+        "badge_id": "PMD-4693",
+        "contact": "+44 7533056248"
+      }
+    },
+    {
+      "report_id": "RPT-00050",
+      "timestamp": "2025-12-09T20:09:53.586326",
+      "report_type": "SHELTER_REQUEST",
+      "severity": "LOW",
+      "status": "ACTIVE",
+      "location": {
+        "latitude": 51.677449,
+        "longitude": -1.271059,
+        "address": "62 Marcham Road, Abingdon, Oxfordshire",
+        "grid_reference": "SU5149896919"
+      },
+      "personnel": [
+        {
+          "type": "Police Unit",
+          "unit_id": "CD-942",
+          "count": 3
+        }
+      ],
+      "description": "Family evacuated from Marcham Road requiring emergency shelter. 4 adults, 2 children, pet dog.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 2,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Medical screening",
+        "Emergency housing",
+        "Blankets",
+        "Food supplies"
+      ],
+      "reported_by": {
+        "name": "Officer Taylor",
+        "badge_id": "PC-9092",
+        "contact": "+44 7231859618"
+      }
+    },
+    {
+      "report_id": "RPT-00051",
+      "timestamp": "2025-12-09T18:50:37.628112",
+      "report_type": "BUILDING_COLLAPSE",
+      "severity": "CRITICAL",
+      "status": "ACTIVE",
+      "location": {
+        "latitude": 51.682034,
+        "longitude": -1.269702,
+        "address": "77 Oxford Road, Abingdon, Oxfordshire",
+        "grid_reference": "SU4624290933"
+      },
+      "personnel": [
+        {
+          "type": "Fire Crew",
+          "unit_id": "FC-919",
+          "count": 4
+        },
+        {
+          "type": "Search & Rescue",
+          "unit_id": "SAR-93",
+          "count": 4
+        }
+      ],
+      "description": "Partial building collapse at Oxford Road. Structure unstable, evacuation of adjacent buildings ordered.",
+      "casualties": {
+        "fatalities": 5,
+        "injured": 4,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Structural engineers",
+        "Temporary shelter",
+        "Medical supplies",
+        "Heavy rescue equipment"
+      ],
+      "reported_by": {
+        "name": "Officer Wilson",
+        "badge_id": "PC-4985",
+        "contact": "+44 7164893949"
+      }
+    },
+    {
+      "report_id": "RPT-00052",
+      "timestamp": "2025-12-10T00:19:54.212329",
+      "report_type": "FLOOD",
+      "severity": "CRITICAL",
+      "status": "ACTIVE",
+      "location": {
+        "latitude": 51.645853,
+        "longitude": -1.286604,
+        "address": "77 West St Helen Street, Abingdon, Oxfordshire",
+        "grid_reference": "SU4478796767"
+      },
+      "personnel": [
+        {
+          "type": "Police Unit",
+          "unit_id": "CD-293",
+          "count": 3
+        }
+      ],
+      "description": "Flash flooding reported along West St Helen Street. Road impassable, vehicles stranded.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 3,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Emergency accommodation",
+        "Rescue boats"
+      ],
+      "reported_by": {
+        "name": "Officer Davies",
+        "badge_id": "PMD-3830",
+        "contact": "+44 7805220560"
+      }
+    },
+    {
+      "report_id": "RPT-00053",
+      "timestamp": "2025-12-09T15:43:07.007255",
+      "report_type": "TRAPPED_VICTIMS",
+      "severity": "CRITICAL",
+      "status": "INVESTIGATING",
+      "location": {
+        "latitude": 51.662643,
+        "longitude": -1.297856,
+        "address": "50 High Street, Abingdon, Oxfordshire",
+        "grid_reference": "SU5222590613"
+      },
+      "personnel": [
+        {
+          "type": "Fire Crew",
+          "unit_id": "FC-363",
+          "count": 5
+        },
+        {
+          "type": "Search & Rescue",
+          "unit_id": "SAR-95",
+          "count": 3
+        },
+        {
+          "type": "Paramedic Team",
+          "unit_id": "EMT-629",
+          "count": 2
+        }
+      ],
+      "description": "Person trapped in elevator on High Street following power failure. Technical rescue team responding.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 2,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Medical supplies",
+        "Lighting equipment",
+        "Lifting gear",
+        "Cutting equipment"
+      ],
+      "reported_by": {
+        "name": "Officer Smith",
+        "badge_id": "FC-2475",
+        "contact": "+44 7864961521"
+      }
+    },
+    {
+      "report_id": "RPT-00054",
+      "timestamp": "2025-12-09T19:26:17.696720",
+      "report_type": "FIRE",
+      "severity": "MEDIUM",
+      "status": "ACTIVE",
+      "location": {
+        "latitude": 51.676621,
+        "longitude": -1.238696,
+        "address": "32 Thames Street, Abingdon, Oxfordshire",
+        "grid_reference": "SU4696795719"
+      },
+      "personnel": [
+        {
+          "type": "Fire Crew",
+          "unit_id": "FC-132",
+          "count": 5
+        },
+        {
+          "type": "Search & Rescue",
+          "unit_id": "SAR-62",
+          "count": 4
+        }
+      ],
+      "description": "Large fire reported at residential property on Thames Street. Flames visible, smoke affecting nearby areas.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 1,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Breathing apparatus",
+        "Thermal imaging",
+        "First aid kits",
+        "Water tankers"
+      ],
+      "reported_by": {
+        "name": "Officer Williams",
+        "badge_id": "PC-2667",
+        "contact": "+44 7640677532"
+      }
+    },
+    {
+      "report_id": "RPT-00055",
+      "timestamp": "2025-12-10T02:00:59.859568",
+      "report_type": "SHELTER_REQUEST",
+      "severity": "MEDIUM",
+      "status": "RESPONDING",
+      "location": {
+        "latitude": 51.686916,
+        "longitude": -1.305015,
+        "address": "53 West St Helen Street, Abingdon, Oxfordshire",
+        "grid_reference": "SU5997791039"
+      },
+      "personnel": [
+        {
+          "type": "Police Unit",
+          "unit_id": "CD-862",
+          "count": 3
+        }
+      ],
+      "description": "Group of 15 residents from West St Helen Street need temporary accommodation. Currently at evacuation center.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 1,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Medical screening",
+        "Blankets"
+      ],
+      "reported_by": {
+        "name": "Officer Smith",
+        "badge_id": "PMD-6296",
+        "contact": "+44 7122251855"
+      }
+    },
+    {
+      "report_id": "RPT-00056",
+      "timestamp": "2025-12-10T01:36:22.668000",
+      "report_type": "SURVIVORS_RESCUED",
+      "severity": "MEDIUM",
+      "status": "INVESTIGATING",
+      "location": {
+        "latitude": 51.68328,
+        "longitude": -1.257986,
+        "address": "122 East St Helen Street, Abingdon, Oxfordshire",
+        "grid_reference": "SU4939198522"
+      },
+      "personnel": [
+        {
+          "type": "Paramedic Team",
+          "unit_id": "EMT-641",
+          "count": 3
+        }
+      ],
+      "description": "Elderly couple found alive in debris on East St Helen Street. Search and rescue team assisted by K9 unit.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 2,
+        "missing": 0,
+        "rescued": 1
+      },
+      "resources_needed": [
+        "General supplies",
+        "Personnel support"
+      ],
+      "reported_by": {
+        "name": "Officer Davies",
+        "badge_id": "PC-8727",
+        "contact": "+44 7440275683"
+      }
+    },
+    {
+      "report_id": "RPT-00057",
+      "timestamp": "2025-12-09T21:22:43.685550",
+      "report_type": "FIRE",
+      "severity": "HIGH",
+      "status": "ACTIVE",
+      "location": {
+        "latitude": 51.644851,
+        "longitude": -1.265882,
+        "address": "107 Vineyard, Abingdon, Oxfordshire",
+        "grid_reference": "SU4283498249"
+      },
+      "personnel": [
+        {
+          "type": "Fire Crew",
+          "unit_id": "FC-131",
+          "count": 7
+        },
+        {
+          "type": "Search & Rescue",
+          "unit_id": "SAR-37",
+          "count": 6
+        }
+      ],
+      "description": "Large fire reported at residential property on Vineyard. Flames visible, smoke affecting nearby areas.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 2,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "Thermal imaging",
+        "First aid kits",
+        "Water tankers"
+      ],
+      "reported_by": {
+        "name": "Officer Johnson",
+        "badge_id": "PC-5799",
+        "contact": "+44 7238544346"
+      }
+    },
+    {
+      "report_id": "RPT-00058",
+      "timestamp": "2025-12-09T12:20:30.781570",
+      "report_type": "POWER_OUTAGE",
+      "severity": "MEDIUM",
+      "status": "RESPONDING",
+      "location": {
+        "latitude": 51.65283,
+        "longitude": -1.298783,
+        "address": "93 Spring Road, Abingdon, Oxfordshire",
+        "grid_reference": "SU5816792835"
+      },
+      "personnel": [
+        {
+          "type": "Police Unit",
+          "unit_id": "CD-271",
+          "count": 4
+        }
+      ],
+      "description": "Transformer failure on Spring Road has left entire neighborhood without electricity. Repair crews dispatched.",
+      "casualties": {
+        "fatalities": 0,
+        "injured": 1,
+        "missing": 0,
+        "rescued": 0
+      },
+      "resources_needed": [
+        "General supplies",
+        "Personnel support"
+      ],
+      "reported_by": {
+        "name": "Officer Williams",
+        "badge_id": "PMD-5889",
+        "contact": "+44 7524768459"
+      }
+    }
+  ]
+}
